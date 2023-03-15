@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-const Header = () => {
+const Button = () => {
     return (
         <View>
-            <Text>ADD to Basket</Text>
+            <Text>Hello, World!</Text>
         </View>
     );
 };
 
-export default Header;
+export default Button;

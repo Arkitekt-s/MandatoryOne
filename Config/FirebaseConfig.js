@@ -3,7 +3,7 @@
 import 'firebase/firestore';
 import 'firebase/auth';
 import 'firebase/storage';
-import{API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID} from '@env';
+import{API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID} from '@env';
 import firebase from "firebase";
 
 
@@ -14,8 +14,8 @@ const FirebaseConfig = {
     projectId: PROJECT_ID,
     storageBucket: STORAGE_BUCKET,
     messagingSenderId: MESSAGING_SENDER_ID,
-    appId: APP_ID,
-    measurementId: MEASUREMENT_ID
+    appId: APP_ID
+
 };
 if (firebase.apps.length === 0) {
     firebase.initializeApp(FirebaseConfig);
