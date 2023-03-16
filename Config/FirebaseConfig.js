@@ -1,10 +1,14 @@
-import firebase from "firebase/compat/app";
+
+
+import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID } from '@env'
+
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
+import firebase from "firebase/compat/app";
 
-import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID } from "@env";
-
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 const firebaseConfig = {
     apiKey: API_KEY,
     authDomain: AUTH_DOMAIN,
@@ -15,10 +19,13 @@ const firebaseConfig = {
     measurementId: MEASUREMENT_ID,
 };
 
-const app = firebase.initializeApp(firebaseConfig);
 
-const auth = app.auth();
-const firestore = app.firestore();
-const storage = app.storage();
 
-export { auth, firestore, firebase, storage };
+firebase.initializeApp(firebaseConfig)
+
+const auth = firebase.auth();
+const firestore = firebase.firestore();
+const storage = firebase.storage();
+const notesRef = firestore.collection('notes')
+
+export { auth, firestore, firebase, storage, notesRef }

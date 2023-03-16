@@ -2,62 +2,64 @@
 //react native functinal export comment's
 import React, {useState} from 'react';
 import {View, Text, Image, Button, TouchableOpacity, TextInput} from 'react-native';
-import {useNavigation} from "@react-navigation/native";
 import {COLORS, SHADOWS, SIZES} from "../constants/index";
-import{firestore} from '../Config/FirebaseConfig';
+import{notesRef,firestore } from '../Config/FirebaseConfig';
 import {useCollectionData} from "react-firebase-hooks/firestore";
 
 
 
 
 const NFTcard = ({data}) => {
-    const navigation = useNavigation();
-    const notesRef = firestore.collection('notes');
     const[notes] = useCollectionData(notesRef, {idField: 'id'});
     const [text, setText] = useState('');
     const [selectedNote, setSelectedNote] = useState(null);
     //add new note to firebase with try and catch
     const addNote = async () => {
         notesRef.add({
-            text123: text,
-        }
+
+                text123: text,
+                NFTData: data.price,
+            }
         ).then(() => {
-            setText('');
-        }
+                setText('');
+
+            }
         ).catch((error) => {
-            alert(error);
-        }
+                alert(error);
+            }
         );
     }
 
-    //update note with try and catch
+    //edite note with try and catch
     const updateNote = async () => {
-        notesRef.doc(selectedNote.id).update({
-            text123: text,
-        }
-        ).then(() => {
-            setText('');
-            setSelectedNote(null);
-        }
-        ).catch((error) => {
+        try {
+            const doc = await notesRef.doc(selectedNote.id).get();
+            if (doc.exists) {
+                await doc.ref.update({text123: text});
+                setText('');
+                setSelectedNote(null);
+            } else {
+                alert("Note not found");
+            }
+        } catch (error) {
             alert(error);
         }
-        );
     }
 
-    //delete note
     const deleteNote = async () => {
-        notesRef.doc(selectedNote.id).delete().then(() => {
-            setText('');
-            setSelectedNote(null);
-
-        }
-        ).catch((error) => {
+        try {
+            const doc = await notesRef.doc(selectedNote.id).get();
+            if (doc.exists) {
+                await doc.ref.delete();
+                setText('');
+                setSelectedNote(null);
+            } else {
+                alert("Note not found");
+            }
+        } catch (error) {
             alert(error);
         }
-        );
     }
-
 
     return (
         <View style={
@@ -81,20 +83,28 @@ const NFTcard = ({data}) => {
                 />
             </View>
             <Text>NFTcards</Text>
+            {/*show only the text realated to each nfd card */}
+            {notes && notes.map((i) => (
+                <TouchableOpacity
+                    key={i.date}
+                    data={i}
 
-            {notes && notes.map(i => (
-                <TouchableOpacity key={i.id} onPress={() => {
-                    setSelectedNote(i);
-                    setText(i.text123);
-                }
-                }>
+                    onPress={() => {
+                        setSelectedNote(i);
+                        console.log('selected note:', i);
+                        setText(i.text123);
+                    }
+                    }
+                >
+
                     {/*text with underline and bold*/}
                     <Text style={
                         {textDecorationLine: 'underline',
                             fontWeight: 'bold',
-                            fontSize:SIZES.extraLarge,
+                            fontSize:SIZES.large,
                             color:COLORS.gray}}
                     >{i.text123}</Text>
+
                 </TouchableOpacity>
             ))}
             <TextInput
@@ -106,10 +116,13 @@ const NFTcard = ({data}) => {
                     borderRadius: 20,
                     margin: 10}}
                 onChangeText={text => setText(text)}
-                value={text}
+                value={selectedNote ? selectedNote.text123 : ''}
             />
+
+
             <Button
                 onPress={selectedNote ? updateNote : addNote}
+                key={selectedNote ? 'update' : 'add'}
                 title={selectedNote ? 'Update Price' : 'Price Suggestion '}
                 color="#841584"
 
@@ -119,8 +132,13 @@ const NFTcard = ({data}) => {
                     onPress={deleteNote}
                     title="Delete Price "
                     color="#d11a2a"
+
                 />
+
             )}
+
+
+
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: SIZES.base}}>
                 <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>{data.creator}</Text>
                 <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>{data.date}</Text>
@@ -135,7 +153,7 @@ const NFTcard = ({data}) => {
                     }
                     }
                 />
-                {/*//image of eth*/}
+
 
             </View>
         </View>
