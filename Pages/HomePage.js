@@ -1,6 +1,6 @@
 
 import React from 'react';
-import {FlatList, SafeAreaView, View,Text} from "react-native";
+import {FlatList, SafeAreaView, View} from "react-native";
 import {COLORS, NFTData} from "../constants/index";
 import Bar from "../component/Bar";
 import Header from "../component/Header";
@@ -18,9 +18,12 @@ const HomePage = () => {
                    data={NFTData}
                    renderItem={({item}) => <NFTcard data={item}/>}
                    KeyExtractor={(item) => item.id}
+
                    showsVerticalScrollIndicator={false}
                    ListHeaderComponent={<Header/>}
+
                />
+                    </View>
                         <View style={{
                             position: 'absolute',
                             top: 0,
@@ -29,11 +32,11 @@ const HomePage = () => {
                             bottom: 0,
                             zIndex: -1,
                         }}>
-                            <View style={{height: 200, backgroundColor: COLORS.primary}} />
+                            <View style={{height: 300, backgroundColor: COLORS.primary}} />
                             <View style={{flex: 1, backgroundColor: COLORS.white}} />
                         </View>
             </View>
-                </View>
+
         </SafeAreaView>
 
     );

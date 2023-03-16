@@ -1,7 +1,8 @@
 import React from 'react';
-import {View, Text, StyleSheet, Button, TextInput} from 'react-native';
+import {View, StyleSheet, Button, TextInput,Image} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {auth} from "../Config/FirebaseConfig";
+import {COLORS} from "../constants";
 
 
 const LoginPage = () => {
@@ -26,15 +27,17 @@ const LoginPage = () => {
                 let errorMessage = error.message;
                     //give an error message if username and password do not match
                     alert(errorMessage);
+
                 }
             );
     }
 
 
     return (
-        <View style={styles.container}>
+        <View style={styles.container} backgroundColor={COLORS.primary}>
             {/*//login with username and password*/}
-            <Text style={{fontSize: 50, fontWeight: 'bold'}}>Login</Text>
+            <Image source={require('../assets/images/logo.png')} style={{width: 400, height: 100}}/>
+
             <TextInput
                 value={username}
                 onChangeText={setUsername}
@@ -61,7 +64,9 @@ const LoginPage = () => {
                 style={styles.inputpassword}
                 margin={20}
             />
-            <Button title="Login" onPress={handleLogin} color="blue"
+            <Button title="Login" onPress={handleLogin}
+                    color="#841584"
+                    rounded={true}
             />
 
         </View>
