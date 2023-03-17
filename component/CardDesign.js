@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-const Button = () => {
+const CardDesign = () => {
     return (
         <View>
             <Text>Hello, World!</Text>
@@ -9,4 +9,4 @@ const Button = () => {
     );
 };
 
-export default Button;
+export default CardDesign;
