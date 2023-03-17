@@ -6,7 +6,7 @@ import Bar from "../component/Bar";
 import Header from "../component/Header";
 import NFTcard from "../component/NFTcard";
 
-const HomePage = () => {
+export default function HomePage () {
     return (
         //import header
         <SafeAreaView style={{flex: 1}}>
@@ -14,10 +14,13 @@ const HomePage = () => {
 
                 <View style={{flex: 1}}>
                     <View style={{zIndex:0}}>
+
                <FlatList
                    data={NFTData}
-                   renderItem={({item}) => <NFTcard data={item}/>}
-                   KeyExtractor={(item) => item.id}
+
+                   renderItem={({item}) => <NFTcard data={item} key={item.id.toString()}/>}
+                   keyExtractor={(item) => item.id.toString()}
+
 
                    showsVerticalScrollIndicator={false}
                    ListHeaderComponent={<Header/>}
@@ -40,5 +43,5 @@ const HomePage = () => {
         </SafeAreaView>
 
     );
-};
-export default HomePage;
+}
+

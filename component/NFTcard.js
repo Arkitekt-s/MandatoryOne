@@ -13,49 +13,28 @@ const NFTcard = ({data}) => {
     const[notes] = useCollectionData(notesRef, {idField: 'id'});
     const [text, setText] = useState('');
     const [selectedNote, setSelectedNote] = useState(null);
-    //add new note to firebase with try and catch
+    //add new note to firebase with try and catch to nftdata collection id
     const addNote = async () => {
-        notesRef.add({
+        firestore.collection('notes').doc(data.id).set({
+            text123: text,
+            date: Date.now(),
+            orginalPrice: data.price,
 
-                text123: text,
-                NFTData: data.price,
-            }
-        ).then(() => {
-                setText('');
-
-            }
-        ).catch((error) => {
-                alert(error);
-            }
+        }).then(() => {
+            alert('Price added to '+data.name+' with the price of '+ text.toString()+' ETH');
+        }).catch((error) => {
+            console.log(error);
+        }
         );
-    }
-
-    //edite note with try and catch
-    const updateNote = async () => {
-        try{
-            await notesRef.doc(selectedNote.id).update({
-                text123: text,
-            });
-            setText('');
-            setSelectedNote(null);
         }
-        catch (error) {
-            alert(error);
-            console.log(error);
-        }
-    }
-
-
     const deleteNote = async () => {
-        try {
-            await notesRef.doc(selectedNote.id).delete();
-            setSelectedNote(null);
-        } catch (error) {
-            alert(error);
+        firestore.collection('notes').doc(data.id).delete().then(() => {
+            alert('Price deleted from '+data.name+' with the price of '+ text.toString()+' ETH');
+        }).catch((error) => {
             console.log(error);
         }
-    }
-
+        );
+        }
 
 
     return (
@@ -97,9 +76,9 @@ const NFTcard = ({data}) => {
                     <Text style={
                         {textDecorationLine: 'underline',
                             fontWeight: 'bold',
-                            fontSize:SIZES.large,
+                            fontSize:SIZES.extraLarge,
                             color:COLORS.gray}}
-                    >{i.text123}</Text>
+                    >{i.text123} {i.date.toString()}</Text>
 
                 </TouchableOpacity>
             ))}
@@ -113,23 +92,20 @@ const NFTcard = ({data}) => {
                     margin: 10}}
                 onChangeText={text => setText(text)}
                 value={text}
-                placeholder="Enter your price suggestion"
+                placeholder="Place your Bid"
 
             />
+<Button
+    onPress={addNote}
+    title="Place a Bid "
+    color="#841584"
+    accessibilityLabel="Learn more about this purple button"
+/>
 
-
-            <Button
-                onPress={selectedNote ? updateNote : addNote}
-                title={selectedNote ? "Update Price" : "Add Price"}
-                color="#841584"
-                disabled={!text}
-                disabledStyle={{backgroundColor: 'red'}}
-
-            />
             {selectedNote && (
                 <Button
                     onPress={deleteNote}
-                    title="Delete Price "
+                    title="Delete a Price "
                     color="#d11a2a"
 
                 />
