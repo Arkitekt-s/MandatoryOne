@@ -36,7 +36,8 @@ const LoginPage = () => {
     return (
         <View style={styles.container} backgroundColor={COLORS.primary}>
             {/*//login with username and password*/}
-            <Image source={require('../assets/images/logo.png')} style={{width: 400, height: 100}}/>
+            <Image source={require('../assets/images/logo.png')} style={{width: 300, height: 100}}
+                     resizeMode="contain"/>
 
             <TextInput
                 value={username}

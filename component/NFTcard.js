@@ -60,16 +60,24 @@ const NFTcard = ({data}) => {
             </View>
             <Text>NFTcards</Text>
             {/*show only the text realated to each nfd card */}
-            {notes && notes.map((i) => (
+            {notes && notes.map((note) => (
                 <TouchableOpacity
-                    key={i.date}
-                    data={i}
-                    onPress={() => {
-                        setSelectedNote(i);
-                        console.log('selected note:', i);
-                        setText(i.text123);
-                    }
-                    }
+
+                     key={note.id}
+                     data={note}
+                     onPress={() => {
+                         if (selectedNote && selectedNote.id === note.id) {
+                             setSelectedNote(null);
+                             setText('');
+                         }
+                         else {
+
+                         setSelectedNote(note);
+                        console.log('selected note:', note);
+                        setText(note.text123);
+                     }
+                        }}
+
                 >
 
                     {/*text with underline and bold*/}
@@ -78,7 +86,8 @@ const NFTcard = ({data}) => {
                             fontWeight: 'bold',
                             fontSize:SIZES.extraLarge,
                             color:COLORS.gray}}
-                    >{i.text123}<Image
+                    >{note.text123}
+                        <Image
                         source={data.eth}
                         resizeMode="cover"
                         style={{
@@ -88,7 +97,7 @@ const NFTcard = ({data}) => {
                         }
                     /></Text>
                     {/*//show the time of the bid*/}
-                    <Text style={{fontSize:SIZES.small}}>{new Date(i.date).toLocaleTimeString().slice(0, 5)}. {new Date(i.date).toLocaleDateString()}</Text>
+                    <Text style={{fontSize:SIZES.small}}>{new Date(note.date).toLocaleTimeString().slice(0, 5)}. {new Date(note.date).toLocaleDateString()}</Text>
                 </TouchableOpacity>
             ))}
             <TextInput
@@ -100,24 +109,27 @@ const NFTcard = ({data}) => {
                     borderRadius: 20,
                     margin: 10}}
                 onChangeText={text => setText(text)}
+                keyboardType='numeric'
                 value={text}
                 placeholder="Place your Bid"
 
             />
 <Button
     onPress={addNote}
-    title="Place a Bid "
+    title="Place a bid"
     color="#841584"
-    accessibilityLabel="Learn more about this purple button"
 />
-
             {selectedNote && (
                 <Button
-                    onPress={deleteNote}
-                    title="Delete a Bid "
-                    color="#d11a2a"
 
+                    onPress={deleteNote}
+                    title="Delete a Bid"
+                    color="#d11a2a"
                 />
+
+
+
+
 
             )}
 
