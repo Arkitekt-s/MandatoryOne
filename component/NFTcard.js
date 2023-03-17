@@ -32,34 +32,31 @@ const NFTcard = ({data}) => {
 
     //edite note with try and catch
     const updateNote = async () => {
-        try {
-            const doc = await notesRef.doc(selectedNote.id).get();
-            if (doc.exists) {
-                await doc.ref.update({text123: text});
-                setText('');
-                setSelectedNote(null);
-            } else {
-                alert("Note not found");
-            }
-        } catch (error) {
+        try{
+            await notesRef.doc(selectedNote.id).update({
+                text123: text,
+            });
+            setText('');
+            setSelectedNote(null);
+        }
+        catch (error) {
             alert(error);
+            console.log(error);
         }
     }
 
+
     const deleteNote = async () => {
         try {
-            const doc = await notesRef.doc(selectedNote.id).get();
-            if (doc.exists) {
-                await doc.ref.delete();
-                setText('');
-                setSelectedNote(null);
-            } else {
-                alert("Note not found");
-            }
+            await notesRef.doc(selectedNote.id).delete();
+            setSelectedNote(null);
         } catch (error) {
             alert(error);
+            console.log(error);
         }
     }
+
+
 
     return (
         <View style={
@@ -88,7 +85,6 @@ const NFTcard = ({data}) => {
                 <TouchableOpacity
                     key={i.date}
                     data={i}
-
                     onPress={() => {
                         setSelectedNote(i);
                         console.log('selected note:', i);
@@ -116,15 +112,18 @@ const NFTcard = ({data}) => {
                     borderRadius: 20,
                     margin: 10}}
                 onChangeText={text => setText(text)}
-                value={selectedNote ? selectedNote.text123 : ''}
+                value={text}
+                placeholder="Enter your price suggestion"
+
             />
 
 
             <Button
                 onPress={selectedNote ? updateNote : addNote}
-                key={selectedNote ? 'update' : 'add'}
-                title={selectedNote ? 'Update Price' : 'Price Suggestion '}
+                title={selectedNote ? "Update Price" : "Add Price"}
                 color="#841584"
+                disabled={!text}
+                disabledStyle={{backgroundColor: 'red'}}
 
             />
             {selectedNote && (
@@ -136,6 +135,10 @@ const NFTcard = ({data}) => {
                 />
 
             )}
+
+
+
+
 
 
 
