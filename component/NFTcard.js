@@ -78,8 +78,17 @@ const NFTcard = ({data}) => {
                             fontWeight: 'bold',
                             fontSize:SIZES.extraLarge,
                             color:COLORS.gray}}
-                    >{i.text123} {i.date.toString()}</Text>
-
+                    >{i.text123}<Image
+                        source={data.eth}
+                        resizeMode="cover"
+                        style={{
+                            width: 25,
+                            height: 25,
+                        }
+                        }
+                    /></Text>
+                    {/*//show the time of the bid*/}
+                    <Text style={{fontSize:SIZES.small}}>{new Date(i.date).toLocaleTimeString().slice(0, 5)}. {new Date(i.date).toLocaleDateString()}</Text>
                 </TouchableOpacity>
             ))}
             <TextInput
@@ -105,7 +114,7 @@ const NFTcard = ({data}) => {
             {selectedNote && (
                 <Button
                     onPress={deleteNote}
-                    title="Delete a Price "
+                    title="Delete a Bid "
                     color="#d11a2a"
 
                 />
@@ -122,16 +131,15 @@ const NFTcard = ({data}) => {
                 <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>{data.creator}</Text>
                 <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>{data.date}</Text>
                 <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>{data.name}</Text>
-                <Text style={{fontSize: SIZES.medium, fontWeight: 'bold'}}>{data.price}</Text>
-                <Image
+                <Text style={{fontSize: SIZES.extraLarge, fontWeight: 'bold'}}>{data.price}<Image
                     source={data.eth}
-                    resizeMode="cover"
                     style={{
                         width: 25,
                         height: 25,
                     }
                     }
-                />
+                /></Text>
+
 
 
             </View>
