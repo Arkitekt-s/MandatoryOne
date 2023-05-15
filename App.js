@@ -2,9 +2,10 @@ import React from 'react';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginPage from "./Pages/LoginPage";
-
+import RegisterPage from "./Pages/RegisterPage";
 import HomePage from "./Pages/HomePage";
 import {useFonts} from "expo-font";
+import SellPage from "./Pages/SellPage";
 
 
 
@@ -35,7 +36,9 @@ const App = () => {
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="Login" component={LoginPage} options={{ title: 'Page1' }} />
+                <Stack.Screen name="RegisterPage" component={RegisterPage} options={{ title: 'Page1-1' }} />
                 <Stack.Screen name="HomePage" component={HomePage} options={{ title: 'Page2' }} />
+                <Stack.Screen name="SellPage" component={SellPage} options={{ title: 'Page2-2' }} />
             </Stack.Navigator>
             </NavigationContainer>
     );

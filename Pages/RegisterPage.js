@@ -1,49 +1,41 @@
 import React from 'react';
-import {View, StyleSheet,Text, TouchableOpacity, TextInput,Image} from 'react-native';
+import {View, StyleSheet,Text, TextInput, Image, TouchableOpacity} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {auth} from "../Config/FirebaseConfig";
 import {COLORS} from "../constants";
-
-
-const LoginPage = () => {
+//register page
+const RegisterPage = () => {
     let navigation = useNavigation();
     //make a username and password match
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
-    //handle login
-    const handleLogin = () => {
+    //handle register
+
+    const handleRegister = () => {
         //read from username and password from firebase
-        auth.signInWithEmailAndPassword(username, password)
+        auth.createUserWithEmailAndPassword(username, password)
             .then((userCredential) => {
                     // Signed in
-                   let user = userCredential.user;
-                    // ...
-                    navigation.navigate('HomePage');
+                    let user = userCredential.user;
+                    // log out to login page after register
+
+                    navigation.goBack();
                     //success message
-                    alert(user.email + " is logged in");
+                    alert(user.email + " is registered");
                 }
             )
             .catch((error) => {
                 let errorMessage = error.message;
                     //give an error message if username and password do not match
                     alert(errorMessage);
-
                 }
             );
     }
-    //HANDLE REGISTER
-    const handleRegister = () => {
-        navigation.navigate('RegisterPage');
-
-    }
-
-
     return (
         <View style={styles.container} backgroundColor={COLORS.primary}>
-            {/*//login with username and password*/}
+            {/*//register with username and password*/}
             <Image source={require('../assets/images/logo.png')} style={{width: 300, height: 100}}
-                     resizeMode="contain"/>
-
+                        resizeMode="contain"/>
             <TextInput
                 value={username}
                 onChangeText={setUsername}
@@ -56,7 +48,6 @@ const LoginPage = () => {
                 margin={20}
 
             />
-
             <TextInput
                 value={password}
                 onChangeText={setPassword}
@@ -64,29 +55,16 @@ const LoginPage = () => {
                 autoCorrect={false}
                 autoFocus={true}
                 placeholder="Enter password"
-                //hide password
-                secureTextEntry={true}
                 containerStyle={{ padding: 10 }}
-                style={styles.inputpassword}
+                style={styles.input}
                 margin={20}
             />
-            <TouchableOpacity onPress={handleLogin}
-                    style={styles.loginButton}
-            >
-                <Text style={{color: 'white'}}>Login</Text>
+            <TouchableOpacity style={styles.button} onPress={handleRegister}>
+                <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
-            {/*register*/}
-            <TouchableOpacity  onPress={handleRegister}
-                    style={styles.registerButton}
-                               title="Register"
-            >
-                <Text style={{color: 'white'}}>Register</Text>
-            </TouchableOpacity>
-
         </View>
     );
 };
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -103,18 +81,7 @@ const styles = StyleSheet.create({
         // make it circle edge
         borderRadius: 20,
     },
-    inputpassword: {
-        height: 40,
-        width: 300,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-        backgroundColor: 'white',
-        // make it circle edge
-        borderRadius: 20,
-    }
-    ,
-    loginButton: {
+    button: {
         alignItems: 'center',
         backgroundColor: '#00A1F2',
         padding: 10,
@@ -123,15 +90,13 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         margin: 12,
     },
-    registerButton: {
-        alignItems: 'center',
-        backgroundColor: '#007C4C',
-        padding: 10,
-        width: 100,
-        height: 40,
-        borderRadius: 20,
-        margin: 12,
+    buttonText: {
+        fontSize: 18,
+        color: '#fff',
+        textAlign: 'center',
+        JustifyContent: 'center',
     }
+
 });
 
-export default LoginPage;
+export default RegisterPage;

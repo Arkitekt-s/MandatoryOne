@@ -1,9 +1,9 @@
 
 //react native functinal export comment's
 import React, {useState} from 'react';
-import {View, Text, Image, Button, TouchableOpacity, TextInput} from 'react-native';
+import {View, Text, Image, TouchableOpacity, TextInput} from 'react-native';
 import {COLORS, SHADOWS, SIZES} from "../constants/index";
-import{notesRef,firestore } from '../Config/FirebaseConfig';
+import{notesRef,firestore,auth } from '../Config/FirebaseConfig';
 import {useCollectionData} from "react-firebase-hooks/firestore";
 
 
@@ -13,12 +13,18 @@ const NFTcard = ({data}) => {
     const[notes] = useCollectionData(notesRef, {idField: 'id'});
     const [text, setText] = useState('');
     const [selectedNote, setSelectedNote] = useState(null);
+    const currentUser = auth.currentUser;
+    const userEmail = currentUser ? currentUser.email : '';
+
     //add new note to firebase with try and catch to nftdata collection id
     const addNote = async () => {
+        // if the number more than previous price
+
         firestore.collection('notes').doc(data.id).set({
             text123: text,
             date: Date.now(),
             orginalPrice: data.price,
+            user: userEmail,
 
         }).then(() => {
             alert('Price added to '+data.name+' with the price of '+ text.toString()+' ETH');
@@ -26,7 +32,8 @@ const NFTcard = ({data}) => {
             console.log(error);
         }
         );
-        }
+}
+
     const deleteNote = async () => {
         firestore.collection('notes').doc(data.id).delete().then(() => {
             alert('Price deleted from '+data.name+' with the price of '+ text.toString()+' ETH');
@@ -88,7 +95,7 @@ const NFTcard = ({data}) => {
                         {textDecorationLine: 'underline',
                             fontWeight: 'bold',
                             fontSize:SIZES.extraLarge,
-                            color:COLORS.gray}}
+                            color:COLORS.secondary}}
                     >{note.text123}
                         <Image
                             source={data.eth}
@@ -101,8 +108,14 @@ const NFTcard = ({data}) => {
                         /></Text>
                     {/*//show the time of the bid*/}
                     <Text style={{fontSize:SIZES.small}}>{new Date(note.date).toLocaleTimeString().slice(0, 5)}. {new Date(note.date).toLocaleDateString()}</Text>
+                    {/*show the user password who placed the bid*/}
+                    <Text style={{ fontSize: SIZES.small }}> User: {note.user}</Text>
 
-                    </TouchableOpacity>
+
+
+
+
+                </TouchableOpacity>
             ))}
             <TextInput
                 style={{
@@ -117,18 +130,41 @@ const NFTcard = ({data}) => {
                 value={text}
                 placeholder="Place your Bid"
             />
-<Button
+<TouchableOpacity
     onPress={addNote}
-    title="Place a bid"
-    color="#841584"
-/>
+    style={{
+        height: 40, borderColor: 'gray', borderWidth: 1,
+        padding: 10,
+        backgroundColor: COLORS.secondary,
+        // make it circle edge
+        borderRadius: 20,
+        margin: 10,
+        alignItems:'center',
+        JustifyContent:'center',
+        width: 100
+    }}
+>
+    <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>Place a bid</Text>
+</TouchableOpacity>
             {selectedNote && (
-                <Button
+                <TouchableOpacity
 
                     onPress={deleteNote}
-                    title="Delete a Bid"
-                    color="#d11a2a"
-                />
+                    style={{
+                        height: 40, borderColor: 'gray', borderWidth: 1,
+                        padding: 10,
+                        backgroundColor: COLORS.white,
+                        // make it circle edge
+                        borderRadius: 20,
+                        margin: 10,
+                        alignItems:'center',
+                        JustifyContent:'center',
+                        width: 100
+                        }
+                    }
+                >
+                    <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>Delete a Bid</Text>
+                </TouchableOpacity>
 
 
 
@@ -160,6 +196,8 @@ const NFTcard = ({data}) => {
             </View>
         </View>
     );
+
 };
+
 
 export default NFTcard;

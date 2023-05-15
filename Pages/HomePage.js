@@ -21,7 +21,6 @@ export default function HomePage () {
                    renderItem={({item}) => <NFTcard data={item} key={item.id.toString()}/>}
                    keyExtractor={(item) => item.id.toString()}
 
-
                    showsVerticalScrollIndicator={false}
                    ListHeaderComponent={<Header/>}
 
@@ -36,7 +35,7 @@ export default function HomePage () {
                             zIndex: -1,
                         }}>
                             <View style={{height: 300, backgroundColor: COLORS.primary}} />
-                            <View style={{flex: 1, backgroundColor: COLORS.white}} />
+                            <View style={{flex: 1, backgroundColor: COLORS.green2}} />
                         </View>
             </View>
 
