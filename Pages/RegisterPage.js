@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     input: {
-        height: 40,
+        height: 50,
         width: 300,
         margin: 12,
         borderWidth: 1,
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#00A1F2',
         padding: 10,
         width: 100,
-        height: 40,
+        height: 50,
         borderRadius: 20,
         margin: 12,
     },

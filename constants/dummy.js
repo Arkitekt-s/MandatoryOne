@@ -8,13 +8,13 @@ const NFTData = [
     description:
       "The action painter abstract expressionists were directly influenced by automatism. Pollock channelled this into producing gestural. The action painter abstract expressionists were directly influenced by automatism. Pollock channelled this into producing gestural. The action painter abstract expressionists were directly influenced by automatism. Pollock channelled this into producing gestural.",
     image: assets.nft01,
-    price: "0.75 ETH",
-    eth: require('../assets/icons/eth.png'),
+    price: "0.75 DKK",
+    dkk: require('../assets/icons/dkk.png'),
     bids: [
       {
         id: "BID-11",
         name: "Adam Tan",
-        price: "0.75 ETH",
+        price: "0.75 DKK",
         image: assets.person02,
         date: "December 12, 2019 at 12:10 PM",
       },
@@ -42,13 +42,13 @@ const NFTData = [
     description:
       "The action painter abstract expressionists were directly influenced by automatism. Pollock channelled this into producing gestural. Nulla sed velit erat vitae leo sem inceptos diam fames arcu hendrerit, quis ultrices in eleifend posuere ipsum conubia porttitor felis.",
     image: assets.nft02,
-    price: "0.5 ETH",
-    eth: require('../assets/icons/eth.png'),
+    price: "0.5 DKK",
+    dkk: require('../assets/icons/dkk.png'),
     bids: [
       {
         id: "BID-21",
         name: "Jessica Tan",
-        price: "0.5 ETH",
+        price: "0.5 DKK",
         image: assets.person04,
         date: "December 12, 2019 at 12:10 PM",
       },
@@ -62,8 +62,8 @@ const NFTData = [
     description:
       "The action painter abstract expressionists were directly influenced by automatism. Pollock channelled this into producing gestural. Lorem ipsum dolor sit amet consectetur adipiscing elit consequat accumsan sapien, lectus convallis malesuada odio curae habitasse dignissim nascetur. Nulla sed velit erat vitae leo sem inceptos diam fames arcu hendrerit, quis ultrices in eleifend posuere ipsum conubia porttitor felis. Lorem ipsum dolor sit amet consectetur adipiscing elit consequat accumsan sapien, lectus convallis malesuada odio curae habitasse dignissim nascetur. Nulla sed velit erat vitae leo sem inceptos diam fames arcu hendrerit, quis ultrices in eleifend posuere ipsum conubia porttitor felis.",
     image: assets.nft03,
-    price: "0.25 ETH",
-    eth: require('../assets/icons/eth.png'),
+    price: "0.25 DKK",
+    dkk: require('../assets/icons/dkk.png'),
     bids: [
       {
         id: "BID-31",
@@ -85,8 +85,8 @@ const NFTData = [
     id: "NFT-04",
     name: "Nifty NFT",
     creator: "Putri Intan",
-    price: "1.5 ETH",
-    eth: require('../assets/icons/eth.png'),
+    price: "1.5 DKK",
+    dkk: require('../assets/icons/dkk.png'),
     description:
       "The action painter abstract expressionists were directly influenced by automatism. Pollock channelled this into producing gestural.Lorem ipsum dolor sit amet consectetur adipiscing elit consequat accumsan sapien, lectus convallis malesuada odio curae habitasse dignissim nascetur.",
     image: assets.nft04,
@@ -125,8 +125,8 @@ const NFTData = [
     id: "NFT-05",
     name: "Colorful circles",
     creator: "David doe",
-    price: "2.5 ETH",
-    eth: require('../assets/icons/eth.png'),
+    price: "2.5 DKK",
+    dkk: require('../assets/icons/dkk.png'),
     description:
       "The action painter abstract expressionists were directly influenced by automatism. Pollock channelled this into producing gestural.",
     image: assets.nft05,
@@ -144,8 +144,8 @@ const NFTData = [
     id: "NFT-06",
     name: "Black box model",
     creator: "Leo Messi",
-    price: "3.5 ETH",
-    eth: require('../assets/icons/eth.png'),
+    price: "3.5 DKK",
+    dkk: require('../assets/icons/dkk.png'),
     description:
       "The action painter abstract expressionists were directly influenced by automatism. Pollock channelled this into producing gestural. Lorem ipsum dolor sit amet consectetur adipiscing elit consequat accumsan sapien, lectus convallis malesuada odio curae habitasse dignissim nascetur. Nulla sed velit erat vitae leo sem inceptos diam fames arcu hendrerit, quis ultrices in eleifend posuere ipsum conubia porttitor felis.",
     image: assets.nft06,
@@ -191,8 +191,8 @@ const NFTData = [
     id: "NFT-07",
     name: "Abstracto soulful art",
     creator: "Victor de la Cruz",
-    price: "10.5 ETH",
-    eth: require('../assets/icons/eth.png'),
+    price: "10.5 DKK",
+    dkk: require('../assets/icons/dkk.png'),
     description:
       "The action painter abstract expressionists were directly influenced by automatism. Pollock channelled this into producing gestural. Lorem ipsum dolor sit amet consectetur adipiscing elit consequat accumsan sapien, lectus convallis malesuada odio curae habitasse dignissim nascetur. Nulla sed velit erat vitae leo sem inceptos diam fames arcu hendrerit, quis ultrices in eleifend posuere ipsum conubia porttitor felis. Ullamcorper platea penatibus ornare egestas nulla ligula hendrerit nisl suscipit sociosqu maximus, tincidunt aptent habitant purus pharetra ultrices dapibus laoreet nisi lacinia. Porta malesuada netus vel sapien conubia porttitor aliquam ut pretium ante litora molestie senectus magna egestas sociosqu, eget aliquet fames pharetra felis posuere varius fringilla quisque in arcu montes eu ullamcorper.",
     image: assets.nft07,

@@ -5,6 +5,8 @@ import {auth} from "../Config/FirebaseConfig";
 import {COLORS} from "../constants";
 
 
+
+
 const LoginPage = () => {
     let navigation = useNavigation();
     //make a username and password match
@@ -83,6 +85,7 @@ const LoginPage = () => {
                 <Text style={{color: 'white'}}>Register</Text>
             </TouchableOpacity>
 
+
         </View>
     );
 };
@@ -94,9 +97,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     input: {
-        height: 40,
+        height: 50,
         width: 300,
-        margin: 12,
+        margin: 20,
         borderWidth: 1,
         padding: 10,
         backgroundColor: 'white',
@@ -104,9 +107,9 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     inputpassword: {
-        height: 40,
+        height: 50,
         width: 300,
-        margin: 12,
+        margin: 20,
         borderWidth: 1,
         padding: 10,
         backgroundColor: 'white',
@@ -117,20 +120,20 @@ const styles = StyleSheet.create({
     loginButton: {
         alignItems: 'center',
         backgroundColor: '#00A1F2',
-        padding: 10,
+        padding: 15,
         width: 100,
-        height: 40,
+        height: 50,
         borderRadius: 20,
-        margin: 12,
+        margin: 20,
     },
     registerButton: {
         alignItems: 'center',
         backgroundColor: '#007C4C',
-        padding: 10,
+        padding: 15,
         width: 100,
-        height: 40,
+        height: 50,
         borderRadius: 20,
-        margin: 12,
+        margin: 20,
     }
 });
 

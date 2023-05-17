@@ -9,34 +9,39 @@ import {useCollectionData} from "react-firebase-hooks/firestore";
 
 
 
+
+
 const NFTcard = ({data}) => {
     const[notes] = useCollectionData(notesRef, {idField: 'id'});
     const [text, setText] = useState('');
     const [selectedNote, setSelectedNote] = useState(null);
     const currentUser = auth.currentUser;
     const userEmail = currentUser ? currentUser.email : '';
+    const [image, setImage] = useState(null);
 
     //add new note to firebase with try and catch to nftdata collection id
     const addNote = async () => {
         // if the number more than previous price
 
         firestore.collection('notes').doc(data.id).set({
-            text123: text,
+            priceSuggestion: text,
             date: Date.now(),
             orginalPrice: data.price,
             user: userEmail,
-
+            image:data.image,
         }).then(() => {
-            alert('Price added to '+data.name+' with the price of '+ text.toString()+' ETH');
+            alert('Price added to '+data.name+' with the price of '+ text.toString()+' DKK');
         }).catch((error) => {
             console.log(error);
         }
         );
 }
 
+
+
     const deleteNote = async () => {
         firestore.collection('notes').doc(data.id).delete().then(() => {
-            alert('Price deleted from '+data.name+' with the price of '+ text.toString()+' ETH');
+            alert('Price deleted from '+data.name+' with the price of '+ text.toString()+' DKK');
         }).catch((error) => {
             console.log(error);
         }
@@ -53,6 +58,10 @@ const NFTcard = ({data}) => {
                 ...SHADOWS.dark,
 
             }}>
+            {/*//get data from firestore*/}
+
+
+
             <View style={{width: "100%", height: 250}}>
                 <Image
                     source={data.image}
@@ -65,7 +74,7 @@ const NFTcard = ({data}) => {
                     }}
                 />
             </View>
-            <Text>NFTcards</Text>
+            <Text>ITEM FOR SELL</Text>
             {/*show only the text realated to each nfd card */}
             {notes && notes
                 .filter((note) => note.orginalPrice === data.price)
@@ -83,7 +92,7 @@ const NFTcard = ({data}) => {
 
                             setSelectedNote(note);
                             console.log('selected note:', note);
-                            setText(note.text123);
+                            setText(note.priceSuggestion);
                         }
                     }}
 
@@ -96,15 +105,14 @@ const NFTcard = ({data}) => {
                             fontWeight: 'bold',
                             fontSize:SIZES.extraLarge,
                             color:COLORS.secondary}}
-                    >{note.text123}
+                    >{note.priceSuggestion}
                         <Image
-                            source={data.eth}
+                            source={data.dkk}
                             resizeMode="cover"
                             style={{
                                 width: 25,
                                 height: 25,
-                            }
-                            }
+                            }}
                         /></Text>
                     {/*//show the time of the bid*/}
                     <Text style={{fontSize:SIZES.small}}>{new Date(note.date).toLocaleTimeString().slice(0, 5)}. {new Date(note.date).toLocaleDateString()}</Text>
@@ -119,7 +127,7 @@ const NFTcard = ({data}) => {
             ))}
             <TextInput
                 style={{
-                    height: 40, borderColor: 'gray', borderWidth: 1,
+                    height: 50, borderColor: 'gray', borderWidth: 1,
                     padding: 10,
                     backgroundColor: 'white',
                     // make it circle edge
@@ -133,8 +141,8 @@ const NFTcard = ({data}) => {
 <TouchableOpacity
     onPress={addNote}
     style={{
-        height: 40, borderColor: 'gray', borderWidth: 1,
-        padding: 10,
+        height: 50, borderColor: 'gray', borderWidth: 1,
+        padding: 15,
         backgroundColor: COLORS.secondary,
         // make it circle edge
         borderRadius: 20,
@@ -144,15 +152,15 @@ const NFTcard = ({data}) => {
         width: 100
     }}
 >
-    <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>Place a bid</Text>
+    <Text style={{fontSize: SIZES.small, fontWeight: 'bold',color: COLORS.white}}>Place a Bid</Text>
 </TouchableOpacity>
             {selectedNote && (
                 <TouchableOpacity
 
                     onPress={deleteNote}
                     style={{
-                        height: 40, borderColor: 'gray', borderWidth: 1,
-                        padding: 10,
+                        height: 50, borderColor: 'gray', borderWidth: 1,
+                        padding: 15,
                         backgroundColor: COLORS.white,
                         // make it circle edge
                         borderRadius: 20,

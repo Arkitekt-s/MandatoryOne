@@ -6,6 +6,7 @@ import RegisterPage from "./Pages/RegisterPage";
 import HomePage from "./Pages/HomePage";
 import {useFonts} from "expo-font";
 import SellPage from "./Pages/SellPage";
+import Googlemap from "./component/Googlemap";
 
 
 
@@ -39,6 +40,7 @@ const App = () => {
                 <Stack.Screen name="RegisterPage" component={RegisterPage} options={{ title: 'Page1-1' }} />
                 <Stack.Screen name="HomePage" component={HomePage} options={{ title: 'Page2' }} />
                 <Stack.Screen name="SellPage" component={SellPage} options={{ title: 'Page2-2' }} />
+                <Stack.Screen name="Googlemap" component={Googlemap} options={{ title: 'Page2-3' }} />
             </Stack.Navigator>
             </NavigationContainer>
     );
