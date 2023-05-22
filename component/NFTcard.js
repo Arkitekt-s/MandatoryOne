@@ -1,10 +1,12 @@
 
 //react native functinal export comment's
 import React, {useState} from 'react';
-import {View, Text, Image, TouchableOpacity, TextInput} from 'react-native';
+import {View, Text,StyleSheet, Image, TouchableOpacity, TextInput} from 'react-native';
 import {COLORS, SHADOWS, SIZES} from "../constants/index";
 import{notesRef,firestore,auth } from '../Config/FirebaseConfig';
 import {useCollectionData} from "react-firebase-hooks/firestore";
+import {useNavigation} from "@react-navigation/native";
+
 
 
 
@@ -12,6 +14,7 @@ import {useCollectionData} from "react-firebase-hooks/firestore";
 
 
 const NFTcard = ({data}) => {
+    let navigation = useNavigation();
     const[notes] = useCollectionData(notesRef, {idField: 'id'});
     const [text, setText] = useState('');
     const [selectedNote, setSelectedNote] = useState(null);
@@ -21,21 +24,31 @@ const NFTcard = ({data}) => {
 
     //add new note to firebase with try and catch to nftdata collection id
     const addNote = async () => {
-        // if the number more than previous price
-
-        firestore.collection('notes').doc(data.id).set({
-            priceSuggestion: text,
-            date: Date.now(),
-            orginalPrice: data.price,
-            user: userEmail,
-            image:data.image,
-        }).then(() => {
-            alert('Price added to '+data.name+' with the price of '+ text.toString()+' DKK');
-        }).catch((error) => {
-            console.log(error);
+        // if the number more than previous price suggestion, you can add it to the database
+        // and compear it with the previous price
+        // const query = await firestore.collection('notes').where("text", "==", data.price).get();
+        // const querySnapshot = query.docs[0];
+        // const queryData = querySnapshot.data();
+        // const queryPrice = queryData.priceSuggestion;
+        if (text > data.price){
+            firestore.collection('notes').doc(data.id).set({
+                itemId: data.id,
+                priceSuggestion: text,
+                date: Date.now(),
+                orginalPrice: data.price,
+                user: userEmail,
+                image:data.image,
+                address:data.address,
+            }).then(() => {
+                alert('Price added to '+data.name+' with the price of '+ text.toString()+' DKK');
+            }).catch((error) => {
+                console.log(error);
+            }
+            );
+        } else {
+            alert('Price is lower than the previous price');
         }
-        );
-}
+    }
 
 
 
@@ -47,7 +60,10 @@ const NFTcard = ({data}) => {
         }
         );
         }
-
+//going to address page in google map
+    const goToAddress = () => {
+        navigation.navigate('Googlemap', {data: data.address});
+    }
 
     return (
         <View style={
@@ -98,6 +114,7 @@ const NFTcard = ({data}) => {
 
                 >
 
+
                     {/*Only render the text for the selected note */}
 
                     <Text style={
@@ -138,6 +155,10 @@ const NFTcard = ({data}) => {
                 value={text}
                 placeholder="Place your Bid"
             />
+            {/*//open google map page*/}
+            <View style={styles.container}>
+
+
 <TouchableOpacity
     onPress={addNote}
     style={{
@@ -152,6 +173,7 @@ const NFTcard = ({data}) => {
         width: 100
     }}
 >
+
     <Text style={{fontSize: SIZES.small, fontWeight: 'bold',color: COLORS.white}}>Place a Bid</Text>
 </TouchableOpacity>
             {selectedNote && (
@@ -174,11 +196,24 @@ const NFTcard = ({data}) => {
                     <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>Delete a Bid</Text>
                 </TouchableOpacity>
 
-
-
-
-
             )}
+                <TouchableOpacity onPress={goToAddress}
+                                  style={{
+                                      height: 50, borderColor: 'gray', borderWidth: 1,
+                                      padding: 15,
+                                      backgroundColor: COLORS.green2,
+                                      // make it circle edge
+                                      borderRadius: 20,
+                                      margin: 10,
+                                      alignItems: 'center',
+                                      JustifyContent: 'center',
+                                      width: 100
+                                  }}
+                >
+                    <Text style={{fontSize: SIZES.small, fontWeight: 'bold',color: COLORS.primary}}> ADDRESS</Text>
+
+                </TouchableOpacity>
+            </View>
 
 
 
@@ -204,8 +239,23 @@ const NFTcard = ({data}) => {
             </View>
         </View>
     );
-
 };
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        // item in front of each other
+        flexDirection: 'row',
+        //
+        flexWrap: 'wrap',
+        // space between each item
+
+
+    }
+});
+
+
 
 
 export default NFTcard;
