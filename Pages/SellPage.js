@@ -76,6 +76,9 @@ const SellPage = () => {
             console.log(error);
         }
     };
+    const handleGoogleMapPress = () => {
+        navigation.navigate('Googlemap', { location: location });
+    };
 
 
 
@@ -102,6 +105,7 @@ const SellPage = () => {
                 />
                 <TextInput
                     style={styles.input}
+                    keyboardType="numeric"
                     placeholder="Price"
                     value={price}
                     onChangeText={setPrice}
@@ -110,7 +114,7 @@ const SellPage = () => {
                 />
                 <TextInput
                     //make it more lines
-                    multiline
+                    multiline={true}
                     editable
                     numberOfLines={4}
                     maxLength={40}
@@ -129,10 +133,13 @@ const SellPage = () => {
                 onChangeText={setLocation}
                 color={COLORS.primary}
                 backgroundColor={COLORS.white}
+
             />
-            {/*//google map*/}
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Googlemap')}>
-                <Text style={styles.buttonText}>Googlemap</Text>
+            {/*//google map get address from textInput address*/}
+            <TouchableOpacity style={styles.button}
+                              value={location}
+                              onPress={handleGoogleMapPress}>
+                <Text style={styles.buttonText}>Google Map</Text>
             </TouchableOpacity>
 
                 {/*//preview image after pick and hide the button*/}

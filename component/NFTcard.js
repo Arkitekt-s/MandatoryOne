@@ -10,9 +10,6 @@ import {useNavigation} from "@react-navigation/native";
 
 
 
-
-
-
 const NFTcard = ({data}) => {
     let navigation = useNavigation();
     const[notes] = useCollectionData(notesRef, {idField: 'id'});
@@ -21,16 +18,32 @@ const NFTcard = ({data}) => {
     const currentUser = auth.currentUser;
     const userEmail = currentUser ? currentUser.email : '';
     const [image, setImage] = useState(null);
+    //read from firebase
+
 
     //add new note to firebase with try and catch to nftdata collection id
     const addNote = async () => {
-        // if the number more than previous price suggestion, you can add it to the database
-        // and compear it with the previous price
-        // const query = await firestore.collection('notes').where("text", "==", data.price).get();
-        // const querySnapshot = query.docs[0];
-        // const queryData = querySnapshot.data();
-        // const queryPrice = queryData.priceSuggestion;
-        if (text > data.price){
+        //does not allow user to bid more the previous price of each item in the list
+        const notesSnapshot = await firestore.collection('notes').get();
+        const notes = [];
+        notesSnapshot.forEach((doc) => {
+            const note = doc.data();
+            note.id = doc.id;
+            notes.push(note);
+        });
+        const lastPrice = notes.filter((note) => note.orginalPrice === data.price)[0];
+
+
+        if (text === '') {
+            alert('Please enter a price');
+            return;
+        }
+        if (isNaN(text)) {
+            alert('Please enter a number');
+            return;
+        }
+        //IF its no price for the items suggested
+        if (lastPrice === undefined) {
             firestore.collection('notes').doc(data.id).set({
                 itemId: data.id,
                 priceSuggestion: text,
@@ -43,8 +56,26 @@ const NFTcard = ({data}) => {
                 alert('Price added to '+data.name+' with the price of '+ text.toString()+' DKK');
             }).catch((error) => {
                 console.log(error);
-            }
-            );
+            });
+            return;
+        }
+
+       
+//its about compear the price with the last price
+        if (text > lastPrice.priceSuggestion) {
+            firestore.collection('notes').doc(data.id).set({
+                itemId: data.id,
+                priceSuggestion: text,
+                date: Date.now(),
+                orginalPrice: data.price,
+                user: userEmail,
+                image:data.image,
+                address:data.address,
+            }).then(() => {
+                alert('Price added to '+data.name+' with the price of '+ text.toString()+' DKK');
+            }).catch((error) => {
+                console.log(error);
+            });
         } else {
             alert('Price is lower than the previous price');
         }
@@ -64,6 +95,9 @@ const NFTcard = ({data}) => {
     const goToAddress = () => {
         navigation.navigate('Googlemap', {data: data.address});
     }
+    //read data from firestore
+
+
 
     return (
         <View style={
@@ -74,7 +108,7 @@ const NFTcard = ({data}) => {
                 ...SHADOWS.dark,
 
             }}>
-            {/*//get data from firestore*/}
+            {/*read data from firestore*/}
 
 
 

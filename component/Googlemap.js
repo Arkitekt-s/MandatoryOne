@@ -7,8 +7,9 @@
     import { StyleSheet, View } from 'react-native';
     import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
     import {GOOGLE_MAPS_API_KEY} from "@env";
+    const Googlemap = ({ route }) => {
+        const { location } = route.params;
 
-const Googlemap = () => {
     const [pin, setPin] = React.useState(null); // [latitude, longitude
     const [region, setRegion] = React.useState({
         latitude: 55.676098,
@@ -35,19 +36,23 @@ const Googlemap = () => {
                 {/*google search autocomplete*/}
                 <GooglePlacesAutocomplete
                     placeholder='Search'
+                    //pass the address as a defult value
+                    defaultValue={location}
                     fetchDetails={true}
                     GooglePlacesSearchQuery={{
                         rankby: 'distance'
                     }}
+                    //save locaton in state
                     onPress={(data, details = null) => {
                         // 'details' is provided when fetchDetails = true
                         setRegion({
                             latitude: details.geometry.location.lat,
                             longitude: details.geometry.location.lng,
                             latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421
+                            longitudeDelta: 0.0421,
                         })
                     }}
+
 
                     query={{
                         // key is in .env file
@@ -56,7 +61,10 @@ const Googlemap = () => {
                         components: 'country:dk',
                         types: 'address',
                         radius: 30000,
+                        input: location.toString(),
                         location: `${region.latitude},${region.longitude}`
+
+
                     }}
                     styles={{
                         container: {
@@ -77,6 +85,7 @@ const Googlemap = () => {
                     longitudeDelta: 0.0421,
                 }}
                 provider={"google"}
+
 
                 >
                  {/*//marker*/}
@@ -106,9 +115,7 @@ const Googlemap = () => {
                             pinColor="blue"
                             draggable={true}
                           //zoom out to see the pin
-                            title={"New Pin"}
-                            description={"New Pin Discription"}
-
+                            title={location}
 
                             // title is address of the marker
                             onDragStart={(e) => console.log('onDragStart', e.nativeEvent.coordinates)}
