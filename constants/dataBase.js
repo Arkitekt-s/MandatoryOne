@@ -16,7 +16,7 @@ const ItemData = [
     image: assets.nft01,
     price: "2500 ",
     dkk: require('../assets/icons/dkk.png'),
-    address: "Strandlodsvej 25D, Copenhagen, Denmark",
+    address: ("standlodsvej25,Copenhagen,Denmark"),
   },
   {
     id: "Item-02",

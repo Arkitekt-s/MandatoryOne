@@ -6,7 +6,7 @@ import {useNavigation} from "@react-navigation/native";
 import {auth} from "../Config/FirebaseConfig";
 
 const Header = () => {
-    let navigation = useNavigation();
+    const navigation = useNavigation();
     const handleSellItem = () => {
         navigation.navigate('SellPage');
     };
@@ -26,9 +26,9 @@ const Header = () => {
             ,COLORS: '#F1F1E6', borderWidth: 1, borderColor: '#00A1F2'}}>
                 <Text style={{color: 'black', fontWeight: 'bold',fontSize: SIZES.medium ,textAlign: 'center'}}>Sell Item</Text>
             </TouchableOpacity>
+
+
             {/*//in front of that its text*/}
-
-
 
         </View>
     );

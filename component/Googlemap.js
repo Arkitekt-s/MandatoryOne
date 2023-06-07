@@ -1,16 +1,16 @@
 
 
-    import React from 'react';
+    import React, {useEffect} from 'react';
     import MapView, {Marker} from 'react-native-maps';
     import {StyleSheet, Text, View} from 'react-native';
     import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
     import {GOOGLE_MAPS_API_KEY} from "@env";
     import {useNavigation} from "@react-navigation/native";
-    import getLocation from "../component/getLocation";
-    const Googlemap = ({ route }) => {
-        const { location } = route.params;
+    import Geocoder from 'react-native-geocoding';
+    const Googlemap = ({route}) => {
+        const { location} = route.params;
         //By separating the shared functionality into a separate module, you can avoid the circular dependency and still have access to the required functionality in both components.
-        const { handleGoogleMapPress } = getLocation();
+        // const { handleGoogleMapPress } = getLocation();
         let navigation = useNavigation();
         const [address, setAddress] = React.useState(''); // [latitude, longitude
 
@@ -35,10 +35,27 @@
         }
         )
     }
-    //     const handleDragEnd = (e) => {
-    //         const { latitude, longitude } = e.nativeEvent.coordinate;
-    //         setAddress(`${latitude},${longitude}`);
-    //     };
+        // const handleDragEnd = (e) => {
+        //     const { latitude, longitude } = e.nativeEvent.coordinate;
+        //     setAddress(`${latitude},${longitude}`);
+        // };
+        // save address
+
+
+
+       const handleGoogleMapPress = (newAddress) => {
+        console.log(newAddress);
+        navigation.navigate('SellPage', {newAddress: newAddress});
+        setAddress(newAddress);
+       }
+
+
+
+
+
+
+
+
 
         return (
             <View style={styles.container}>
@@ -98,6 +115,11 @@
                     longitudeDelta: 0.0421,
                 }}
                 provider={"google"}
+                      initialRegion={region}
+                      provider="google"
+                      zoomEnabled={true} // Enable zoom functionality
+                      zoomControlEnabled={true}// Enable zoom control
+                        zoomTapEnabled={true}
 
 
                 >
@@ -138,10 +160,13 @@
                                 handleDragEnd(e);
                             }
                             }
-                    //         onPress={() =>
-                    //             // SHOW ADDRESS IN SELL PAGE
-                    //             handleGoogleMapPress(address)
-                    // }
+                            onPress={() => {
+                                navigation.goBack();
+                                handleGoogleMapPress(region.latitude.toString() + "," + region.longitude.toString());
+                            }}
+
+
+
                     />
                 </MapView>
 

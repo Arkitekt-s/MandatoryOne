@@ -7,6 +7,7 @@ import{notesRef,firestore,auth } from '../Config/FirebaseConfig';
 import {useCollectionData} from "react-firebase-hooks/firestore";
 import {useNavigation} from "@react-navigation/native";
 import Googlemap from "./Googlemap";
+import { Alert } from 'react-native';
 
 
 
@@ -45,7 +46,7 @@ import Googlemap from "./Googlemap";
             return;
         }
         //IF its no price for the items suggested
-        if (lastPrice === undefined) {
+        if (lastPrice === undefined  && text > data.price) {
             firestore.collection('items').doc(data.id).set({
                 itemId: data.id,
                 priceSuggestion: text,
@@ -57,14 +58,18 @@ import Googlemap from "./Googlemap";
             }).then(() => {
                 alert('Price added to '+data.brand+' with the price of '+ text.toString()+' DKK');
             }).catch((error) => {
+                //give alart if the price is lower than the orginal price
                 console.log(error);
+                Alert.alert('Price is lower than the original price');
             });
             return;
+
         }
+
 
        
 //its about compear the price with the last price
-        if (text > lastPrice.priceSuggestion) {
+        if (text > lastPrice.priceSuggestion  && text > data.price  ) {
             firestore.collection('items').doc(data.id).set({
                 itemId: data.id,
                 priceSuggestion: text,
@@ -83,6 +88,9 @@ import Googlemap from "./Googlemap";
             alert('Price is lower than the previous price');
         }
     }
+    //should only be able the price no less than orginal price
+
+
 
 
 
@@ -99,10 +107,9 @@ import Googlemap from "./Googlemap";
     //open google map
     const openMap = () => {
         navigation.navigate('Googlemap', {location: data.address});
-        //pass the location to GooglePlacesAutocomplete
-
-
-
+        if (data.address === '') {
+            alert('No address provided');
+        }
 
     }
 
@@ -244,6 +251,7 @@ import Googlemap from "./Googlemap";
                 >
                     <Text style={{fontSize: SIZES.small, fontWeight: 'bold',color: COLORS.primary}}> ADDRESS</Text>
                 </TouchableOpacity>
+
             </View>
 
 
