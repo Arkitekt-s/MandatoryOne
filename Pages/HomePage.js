@@ -1,10 +1,11 @@
 
 import React from 'react';
 import {FlatList, SafeAreaView, View} from "react-native";
-import {COLORS, NFTData} from "../constants/index";
+import {COLORS, ItemData} from "../constants/index";
 import Bar from "../component/Bar";
 import Header from "../component/Header";
-import NFTcard from "../component/NFTcard";
+import Sellcard from "../component/Sellcard";
+
 
 export default function HomePage () {
     return (
@@ -16,15 +17,13 @@ export default function HomePage () {
                     <View style={{zIndex:0}}>
 
                <FlatList
-                   data={NFTData}
-
-                   renderItem={({item}) => <NFTcard data={item} key={item.id.toString()}/>}
+                   data={ItemData}
+                   renderItem={({item}) => <Sellcard data={item} key={item.id.toString()}/>}
                    keyExtractor={(item) => item.id.toString()}
-
                    showsVerticalScrollIndicator={false}
                    ListHeaderComponent={<Header/>}
-
                />
+
                     </View>
                         <View style={{
                             position: 'absolute',

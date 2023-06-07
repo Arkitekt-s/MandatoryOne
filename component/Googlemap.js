@@ -1,14 +1,18 @@
 
 
-
-
     import React from 'react';
     import MapView, {Marker} from 'react-native-maps';
-    import { StyleSheet, View } from 'react-native';
+    import {StyleSheet, Text, View} from 'react-native';
     import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
     import {GOOGLE_MAPS_API_KEY} from "@env";
+    import {useNavigation} from "@react-navigation/native";
+    import getLocation from "../component/getLocation";
     const Googlemap = ({ route }) => {
         const { location } = route.params;
+        //By separating the shared functionality into a separate module, you can avoid the circular dependency and still have access to the required functionality in both components.
+        const { handleGoogleMapPress } = getLocation();
+        let navigation = useNavigation();
+        const [address, setAddress] = React.useState(''); // [latitude, longitude
 
     const [pin, setPin] = React.useState(null); // [latitude, longitude
     const [region, setRegion] = React.useState({
@@ -31,6 +35,11 @@
         }
         )
     }
+    //     const handleDragEnd = (e) => {
+    //         const { latitude, longitude } = e.nativeEvent.coordinate;
+    //         setAddress(`${latitude},${longitude}`);
+    //     };
+
         return (
             <View style={styles.container}>
                 {/*google search autocomplete*/}
@@ -40,7 +49,10 @@
                     defaultValue={location}
                     fetchDetails={true}
                     GooglePlacesSearchQuery={{
-                        rankby: 'distance'
+                        rankby: 'distance',
+                        region: 'dk',
+                        type: 'address',
+
                     }}
                     //save locaton in state
                     onPress={(data, details = null) => {
@@ -51,6 +63,7 @@
                             latitudeDelta: 0.0922,
                             longitudeDelta: 0.0421,
                         })
+                        // setAddress(details.formatted_address);
                     }}
 
 
@@ -107,26 +120,31 @@
                             }
 
                     />
-                     {/*//add more marker*/}
-                  <Marker coordinate={{
+
+                 {/*//save the address and comr back to the home page*/}
+                    <Marker coordinate={{
                         latitude: region.latitude,
                         longitude: region.longitude,
-                    }}
+
+                    }
+                    }
                             pinColor="blue"
                             draggable={true}
-                          //zoom out to see the pin
-                            title={location}
-
-                            // title is address of the marker
+                            title={(region.latitude.toString() + "," + region.longitude.toString())}
+                            description={"Save the address"}
                             onDragStart={(e) => console.log('onDragStart', e.nativeEvent.coordinates)}
                             onDrag={(e) => console.log('onDrag', e.nativeEvent.coordinates)}
                             onDragEnd={(e) => {
-                                console.log('onDragEnd', e.nativeEvent.coordinates);
-                                setPin(e.nativeEvent.coordinate);
+                                handleDragEnd(e);
                             }
                             }
+                    //         onPress={() =>
+                    //             // SHOW ADDRESS IN SELL PAGE
+                    //             handleGoogleMapPress(address)
+                    // }
                     />
                 </MapView>
+
             </View>
         );
     }
@@ -134,7 +152,7 @@
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            marginTop: 50,
+            marginTop: 10,
             backgroundColor: '#fff',
             alignItems: 'center',
             justifyContent: 'center',

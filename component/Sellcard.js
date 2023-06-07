@@ -6,25 +6,27 @@ import {COLORS, SHADOWS, SIZES} from "../constants/index";
 import{notesRef,firestore,auth } from '../Config/FirebaseConfig';
 import {useCollectionData} from "react-firebase-hooks/firestore";
 import {useNavigation} from "@react-navigation/native";
+import Googlemap from "./Googlemap";
 
 
 
 
-const NFTcard = ({data}) => {
+ const Sellcard = ({data}) => {
+
     let navigation = useNavigation();
     const[notes] = useCollectionData(notesRef, {idField: 'id'});
     const [text, setText] = useState('');
     const [selectedNote, setSelectedNote] = useState(null);
     const currentUser = auth.currentUser;
     const userEmail = currentUser ? currentUser.email : '';
-    const [image, setImage] = useState(null);
+
     //read from firebase
 
 
-    //add new note to firebase with try and catch to nftdata collection id
+    //add new note to firebase with try and catch
     const addNote = async () => {
         //does not allow user to bid more the previous price of each item in the list
-        const notesSnapshot = await firestore.collection('notes').get();
+        const notesSnapshot = await firestore.collection('items').get();
         const notes = [];
         notesSnapshot.forEach((doc) => {
             const note = doc.data();
@@ -44,7 +46,7 @@ const NFTcard = ({data}) => {
         }
         //IF its no price for the items suggested
         if (lastPrice === undefined) {
-            firestore.collection('notes').doc(data.id).set({
+            firestore.collection('items').doc(data.id).set({
                 itemId: data.id,
                 priceSuggestion: text,
                 date: Date.now(),
@@ -53,7 +55,7 @@ const NFTcard = ({data}) => {
                 image:data.image,
                 address:data.address,
             }).then(() => {
-                alert('Price added to '+data.name+' with the price of '+ text.toString()+' DKK');
+                alert('Price added to '+data.brand+' with the price of '+ text.toString()+' DKK');
             }).catch((error) => {
                 console.log(error);
             });
@@ -63,16 +65,17 @@ const NFTcard = ({data}) => {
        
 //its about compear the price with the last price
         if (text > lastPrice.priceSuggestion) {
-            firestore.collection('notes').doc(data.id).set({
+            firestore.collection('items').doc(data.id).set({
                 itemId: data.id,
                 priceSuggestion: text,
                 date: Date.now(),
                 orginalPrice: data.price,
                 user: userEmail,
+                userId: auth.currentUser.uid.slice(0, 5),
                 image:data.image,
                 address:data.address,
             }).then(() => {
-                alert('Price added to '+data.name+' with the price of '+ text.toString()+' DKK');
+                alert('Price added to '+data.brand+' with the price of '+ text.toString()+' DKK');
             }).catch((error) => {
                 console.log(error);
             });
@@ -84,34 +87,36 @@ const NFTcard = ({data}) => {
 
 
     const deleteNote = async () => {
-        firestore.collection('notes').doc(data.id).delete().then(() => {
-            alert('Price deleted from '+data.name+' with the price of '+ text.toString()+' DKK');
+        firestore.collection('items').doc(data.id).delete().then(() => {
+            alert('Price deleted from '+data.brand+' with the price of '+ text.toString()+' DKK');
         }).catch((error) => {
             console.log(error);
         }
         );
         }
-//going to address page in google map
-    const goToAddress = () => {
-        navigation.navigate('Googlemap', {data: data.address});
+
+
+    //open google map
+    const openMap = () => {
+        navigation.navigate('Googlemap', {location: data.address});
+        //pass the location to GooglePlacesAutocomplete
+
+
+
+
     }
-    //read data from firestore
 
 
 
     return (
+
         <View style={
             {backgroundColor: COLORS.white,
                 borderRadius: SIZES.font,
                 marginBottom: SIZES.extraLarge,
                 margin:SIZES.base,
                 ...SHADOWS.dark,
-
             }}>
-            {/*read data from firestore*/}
-
-
-
             <View style={{width: "100%", height: 250}}>
                 <Image
                     source={data.image}
@@ -124,13 +129,11 @@ const NFTcard = ({data}) => {
                     }}
                 />
             </View>
-            <Text>ITEM FOR SELL</Text>
             {/*show only the text realated to each nfd card */}
             {notes && notes
                 .filter((note) => note.orginalPrice === data.price)
                 .map((note) => (
                 <TouchableOpacity
-
                     key={note.id}
                     data={note}
                     onPress={() => {
@@ -139,13 +142,11 @@ const NFTcard = ({data}) => {
                             setText('');
                         }
                         else {
-
                             setSelectedNote(note);
                             console.log('selected note:', note);
                             setText(note.priceSuggestion);
                         }
                     }}
-
                 >
 
 
@@ -168,11 +169,7 @@ const NFTcard = ({data}) => {
                     {/*//show the time of the bid*/}
                     <Text style={{fontSize:SIZES.small}}>{new Date(note.date).toLocaleTimeString().slice(0, 5)}. {new Date(note.date).toLocaleDateString()}</Text>
                     {/*show the user password who placed the bid*/}
-                    <Text style={{ fontSize: SIZES.small }}> User: {note.user}</Text>
-
-
-
-
+                    <Text style={{ fontSize: SIZES.small } }> Last bid by: {note.user}</Text>
 
                 </TouchableOpacity>
             ))}
@@ -212,7 +209,6 @@ const NFTcard = ({data}) => {
 </TouchableOpacity>
             {selectedNote && (
                 <TouchableOpacity
-
                     onPress={deleteNote}
                     style={{
                         height: 50, borderColor: 'gray', borderWidth: 1,
@@ -231,7 +227,9 @@ const NFTcard = ({data}) => {
                 </TouchableOpacity>
 
             )}
-                <TouchableOpacity onPress={goToAddress}
+                {/*googing to google map page*/}
+                <TouchableOpacity onPress={openMap}
+                                  value={data.address}
                                   style={{
                                       height: 50, borderColor: 'gray', borderWidth: 1,
                                       padding: 15,
@@ -245,7 +243,6 @@ const NFTcard = ({data}) => {
                                   }}
                 >
                     <Text style={{fontSize: SIZES.small, fontWeight: 'bold',color: COLORS.primary}}> ADDRESS</Text>
-
                 </TouchableOpacity>
             </View>
 
@@ -256,11 +253,12 @@ const NFTcard = ({data}) => {
 
 
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: SIZES.base}}>
-                <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>{data.creator}</Text>
+                <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>{data.category}</Text>
                 <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>{data.date}</Text>
-                <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>{data.name}</Text>
-                <Text style={{fontSize: SIZES.extraLarge, fontWeight: 'bold'}}>{data.price}<Image
-                    source={data.eth}
+                <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>{data.brand}</Text>
+                <Text style={{fontSize: SIZES.extraLarge, fontWeight: 'bold'}}>{data.price}
+                    <Image
+                    source={data.dkk}
                     style={{
                         width: 25,
                         height: 25,
@@ -292,4 +290,4 @@ const styles = StyleSheet.create({
 
 
 
-export default NFTcard;
+export default Sellcard;

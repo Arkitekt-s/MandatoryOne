@@ -1,8 +1,8 @@
 import badge from "../assets/icons/badge.png";
-import eth from "../assets/icons/eth.png";
 import heart from "../assets/icons/heart.png";
 import left from "../assets/icons/left.png";
 import search from "../assets/icons/search.png";
+import dkk from "../assets/icons/dkk.png";
 
 import logo from "../assets/images/logo.png";
 import nft01 from "../assets/images/nft01.jpg";
@@ -17,12 +17,11 @@ import nft07 from "../assets/images/nft07.jpg";
 
 export default {
   badge,
-  eth,
   heart,
   left,
   search,
-
   logo,
+  dkk,
   nft01,
   nft02,
   nft03,
@@ -30,6 +29,4 @@ export default {
   nft05,
   nft06,
   nft07,
-
-
 };

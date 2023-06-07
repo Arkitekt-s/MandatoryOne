@@ -26,6 +26,6 @@ firebase.initializeApp(firebaseConfig)
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 const storage = firebase.storage();
-const notesRef = firestore.collection('notes')
+const notesRef = firestore.collection('items')
 
 export { auth, firestore, firebase, storage, notesRef }
