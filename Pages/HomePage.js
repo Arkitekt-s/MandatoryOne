@@ -5,6 +5,7 @@ import {COLORS, ItemData} from "../constants/index";
 import Bar from "../component/Bar";
 import Header from "../component/Header";
 import Sellcard from "../component/Sellcard";
+import FetchData from "../component/FetchData";
 
 
 export default function HomePage () {
@@ -22,6 +23,9 @@ export default function HomePage () {
                    keyExtractor={(item) => item.id.toString()}
                    showsVerticalScrollIndicator={false}
                    ListHeaderComponent={<Header/>}
+                   //fetch data from firebase
+                   ListFooterComponent={<FetchData/>}
+
                />
 
                     </View>
@@ -34,7 +38,7 @@ export default function HomePage () {
                             zIndex: -1,
                         }}>
                             <View style={{height: 300, backgroundColor: COLORS.primary}} />
-                            <View style={{flex: 1, backgroundColor: COLORS.green2}} />
+                            <View style={{flex: 1, backgroundColor: COLORS.white}} />
                         </View>
             </View>
 

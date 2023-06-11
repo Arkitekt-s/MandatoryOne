@@ -9,8 +9,7 @@
     import Geocoder from 'react-native-geocoding';
     const Googlemap = ({route}) => {
         const { location} = route.params;
-        //By separating the shared functionality into a separate module, you can avoid the circular dependency and still have access to the required functionality in both components.
-        // const { handleGoogleMapPress } = getLocation();
+
         let navigation = useNavigation();
         const [address, setAddress] = React.useState(''); // [latitude, longitude
 
@@ -35,19 +34,13 @@
         }
         )
     }
-        // const handleDragEnd = (e) => {
-        //     const { latitude, longitude } = e.nativeEvent.coordinate;
-        //     setAddress(`${latitude},${longitude}`);
-        // };
-        // save address
-
-
 
        const handleGoogleMapPress = (newAddress) => {
         console.log(newAddress);
         navigation.navigate('SellPage', {newAddress: newAddress});
         setAddress(newAddress);
        }
+
 
 
 

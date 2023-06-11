@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import * as ImagePicker from 'expo-image-picker';
-import {COLORS} from "../constants";
+import {COLORS, SIZES} from "../constants";
 
 const ImagePickerComponent = ({ onImageSelected }) => {
     const [image, setImage] = useState(null);
@@ -29,24 +29,24 @@ const ImagePickerComponent = ({ onImageSelected }) => {
 
     return (
         <TouchableOpacity style={styles.button} onPress={pickImage}>
-            <Text style={styles.buttonText}>Pick an image</Text>
+            <Text style={styles.buttonText}>Image</Text>
         </TouchableOpacity>
     );
 
 };
 const styles = StyleSheet.create({
     button: {
-        width: 150,
+        width: 100,
         height: 50,
         backgroundColor: COLORS.secondary,
         borderRadius: 20,
-        padding: 10,
+        padding: 15,
         margin: 10,
         alignItems: 'center',
         justifyContent: 'center',
         color: COLORS.secondary,
     },
-    buttonText: { fontSize: 16, color: COLORS.white, fontWeight: 'bold'},
+    buttonText: { fontSize: SIZES.small, color: COLORS.white, fontWeight: 'bold'},
 });
 
 

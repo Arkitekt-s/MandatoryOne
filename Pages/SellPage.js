@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 import {COLORS, SHADOWS, SIZES} from '../constants';
-import { auth, firestore, firebase, storage, notesRef } from "../Config/FirebaseConfig";
+import { auth, firestore} from "../Config/FirebaseConfig";
 import {useNavigation} from "@react-navigation/native";
 import Bar from "../component/Bar";
 import ImagePickerComponent from "../component/ImagePickerComponent";
@@ -23,18 +23,20 @@ import UploadImageComponent from "../component/UploadImageComponent";
 
     const SellPage = ({route}) => {
          const { newAddress } =  route?.params ?? {};
-
+        const [notesData, setNotesData] = useState([]);
 
 
 
         // const { handleGoogleMapPress } = getLocation();
         let navigation = useNavigation();
         const [image, setImage] = useState(null);
+        const [priceSuggestions, setPriceSuggestions] = useState('');
         const [uploading, setUploading] = useState(false);
         const [title, setTitle] = useState('');
-        const [price, setPrice] = useState('');
+        const [originalPrice, setOriginalPrice] = useState('');
         const [description, setDescription] = useState('');
         const [location, setLocation] = useState(newAddress ?? 'no address');
+
         //By using the useEffect hook with newAddress as a dependency, the location state will be updated whenever newAddress changes.
         useEffect(() => {
             if (newAddress) {
@@ -48,17 +50,18 @@ import UploadImageComponent from "../component/UploadImageComponent";
 
         const handleSell = async () => {
             try {
-                if (image && title && price && description) {
+                if (image && title && originalPrice && description) {
                     const uploadTask = await UploadImageComponent(image);
                     const snapshot = await uploadTask;
                     const url = await snapshot.ref.getDownloadURL();
                     const documentName = `Sell-Item- ${Date.now()} `;
 
-                    await firestore.collection('items').doc(documentName).set({
+                    await firestore.collection('sellitems').doc(documentName).set({
                         //uniq sell id for each item
                         userId: auth.currentUser.uid.slice(0, 5),
                         title: title,
-                        price: price,
+                        originalPrice: originalPrice,
+                        priceSuggestions: priceSuggestions,
                         date: Date.now(),
                         description: description,
                         address: location,
@@ -66,7 +69,18 @@ import UploadImageComponent from "../component/UploadImageComponent";
                     });
 
                     alert('item added');
-                    navigation.goBack();
+                    //// Update the notesData state variable by fetching the updated data from Firestore.
+                    const notesSnapshot = await firestore.collection('sellitems').get();
+                    const notes = [];
+                    notesSnapshot.forEach((doc) => {
+                        const note = doc.data();
+                        note.id = doc.id;
+                        notes.push(note);
+                    });
+
+                    setNotesData(notes);
+
+                    navigation.navigate('HomePage');
                 } else {
                     alert('Please fill all fields');
                 }
@@ -75,11 +89,6 @@ import UploadImageComponent from "../component/UploadImageComponent";
             }
         };
 
-
-        // const GoogleMapPress = async () => {
-        //     const result = await navigation.navigate('Googlemap', { location:location});
-        //     setLocation(result);
-        // };
         const GoogleMapPress = async () => {
             const result = await navigation.navigate('Googlemap', { location: location });
             if (result && result.params && result.params.newAddress) {
@@ -91,13 +100,13 @@ import UploadImageComponent from "../component/UploadImageComponent";
 
         return (
             //particularly on devices with notches, rounded corners
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1 }} backgroundColor={COLORS.primary}>
                 {/*back ground of page color*/}
-                <Bar backgroundColor={COLORS.green2} />
+                <Bar backgroundColor={COLORS.primary} />
                 <ScrollView style={{ flex: 1 }}>
 
                     <View style={
-                        {backgroundColor: COLORS.white,
+                        {backgroundColor: COLORS.yellow,
                             borderRadius: SIZES.font,
                             marginBottom: SIZES.extraLarge,
                             margin:SIZES.base,
@@ -107,28 +116,32 @@ import UploadImageComponent from "../component/UploadImageComponent";
                         {/*//user id email*/}
                         <Text style={styles.text}>User ID: {auth.currentUser.uid.slice(0, 5)}</Text>
                         <Text style={styles.text}>Date: {new Date().toDateString()}</Text>
+                        <View style={styles.container}>
                         <TextInput
                             style={styles.input}
                             placeholder="Title"
 
                             value={title}
-                            backgroundColor={COLORS.white}
+                            backgroundColor='white'
                             onChangeText={setTitle}
                             // color of text
                             color={COLORS.primary}
                         />
+                        </View>
+                        <View style={styles.container}>
                         <TextInput
                             style={styles.input}
                             keyboardType="numeric"
                             placeholder="Price"
-                            value={price}
-                            onChangeText={setPrice}
+                            value={originalPrice}
+                            onChangeText={setOriginalPrice}
                             color={COLORS.primary}
-                            backgroundColor={COLORS.white}
+                            backgroundColor='white'
                         />
+                        </View>
                         {/*//show date*/}
 
-
+                        <View style={styles.container}>
                         <TextInput
                             //make it more lines
                             multiline={true}
@@ -140,50 +153,43 @@ import UploadImageComponent from "../component/UploadImageComponent";
                             value={description}
                             onChangeText={setDescription}
                             color={COLORS.primary}
-                            backgroundColor={COLORS.white}
+                            backgroundColor='white'
                         />
-                        {/*//address*/}
-                        {/*<TextInput*/}
-                        {/*    style={styles.input}*/}
-                        {/*    placeholder="Address"*/}
-                        {/*    value={location}*/}
-                        {/*    //change text to outcoming text of google map address*/}
-                        {/*    onChangeText={setLocation}*/}
-                        {/*    color={COLORS.primary}*/}
-                        {/*    backgroundColor={COLORS.white}*/}
-                        {/*/>*/}
-                        {/*//address is latetiute and langtitude of map*/}
+                        </View>
 
-                        {/*<Text style={styles.text}>Address: {address}</Text>*/}
-                        {/*//google map get address from textInput address*/}
+                        <View style={styles.container}>
+
                         <TouchableOpacity style={styles.button}
                                           value={location}
                                           onPress={GoogleMapPress}>
                             {/*save address*/}
-                            <Text style={styles.buttonText}>Google map</Text>
-
+                            <Text style={styles.buttonText}>Address</Text>
                         </TouchableOpacity>
+
+
                         {/*RESULT OF GOOGLE MAP*/}
                         <TextInput
                             style={styles.input}
                             placeholder="Address"
                             value={location}
-                            //set location to new address
-                            // onChangeText={newAddress => setLocation(newAddress ?? '' )}
                             editable={false}
-                            // onChangeText={setLocation}
                             color={COLORS.primary}
-                            backgroundColor={COLORS.white}
+                            backgroundColor='white'
                         />
+
 
                         {/*//preview image after pick and hide the button*/}
 
                         <ImagePickerComponent onImageSelected={handleImageSelected} />
 
+
                         {/*after upload image and fill the text input, press sell button*/}
-                        <TouchableOpacity style={styles.button} onPress={handleSell}>
+
+                        <TouchableOpacity style={styles.buttonsell} onPress={handleSell}>
                             <Text style={styles.buttonText}>Sell</Text>
                         </TouchableOpacity>
+                        </View>
+
 
                         <View style={{width: "100%", height: 250}}>
                             {image && (
@@ -200,6 +206,7 @@ import UploadImageComponent from "../component/UploadImageComponent";
                             )}
                         </View>
 
+
                     </View>
                 </ScrollView>
             </SafeAreaView>
@@ -215,7 +222,13 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        // item in front of each other
+        flexDirection: 'row',
+        //
+        flexWrap: 'wrap',
+        // space between each item
     },
+
     text: { fontSize: 20,
         color: COLORS.secondary,
         fontWeight: 'bold',
@@ -234,17 +247,29 @@ const styles = StyleSheet.create({
         color: COLORS.white,
     },
     button: {
-        width: 150,
+        width: 100,
         height: 50,
         backgroundColor: COLORS.secondary,
         borderRadius: 20,
-        padding: 10,
+        padding: 15,
+        margin: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: COLORS.yellow,
+    },
+    buttonText: { fontSize: SIZES.small, color: COLORS.white, fontWeight: 'bold'},
+    buttonsell: {
+        width: 100,
+        height: 50,
+        backgroundColor: COLORS.secondary,
+        borderRadius: 20,
+        padding: 15,
         margin: 10,
         alignItems: 'center',
         justifyContent: 'center',
         color: COLORS.secondary,
-    },
-    buttonText: { fontSize: 16, color: COLORS.white, fontWeight: 'bold'},
+
+    }
 });
 export default SellPage;
 

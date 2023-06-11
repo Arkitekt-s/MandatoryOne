@@ -6,8 +6,8 @@ import {COLORS, SHADOWS, SIZES} from "../constants/index";
 import{notesRef,firestore,auth } from '../Config/FirebaseConfig';
 import {useCollectionData} from "react-firebase-hooks/firestore";
 import {useNavigation} from "@react-navigation/native";
-import Googlemap from "./Googlemap";
 import { Alert } from 'react-native';
+
 
 
 
@@ -117,23 +117,13 @@ import { Alert } from 'react-native';
 
     return (
 
-        <View style={
-            {backgroundColor: COLORS.white,
-                borderRadius: SIZES.font,
-                marginBottom: SIZES.extraLarge,
-                margin:SIZES.base,
-                ...SHADOWS.dark,
-            }}>
+        <View style={styles.Card}>
+
             <View style={{width: "100%", height: 250}}>
                 <Image
                     source={data.image}
                     resizeMode="cover"
-                    style={{
-                        width: "100%",
-                        height: "100%",
-                        borderTopLeftRadius: SIZES.font,
-                        borderTopRightRadius: SIZES.font,
-                    }}
+                    style={styles.Imagecard}
                 />
             </View>
             {/*show only the text realated to each nfd card */}
@@ -155,15 +145,8 @@ import { Alert } from 'react-native';
                         }
                     }}
                 >
-
-
                     {/*Only render the text for the selected note */}
-
-                    <Text style={
-                        {textDecorationLine: 'underline',
-                            fontWeight: 'bold',
-                            fontSize:SIZES.extraLarge,
-                            color:COLORS.secondary}}
+                    <Text style={styles.Textlarge}
                     >{note.priceSuggestion}
                         <Image
                             source={data.dkk}
@@ -174,20 +157,14 @@ import { Alert } from 'react-native';
                             }}
                         /></Text>
                     {/*//show the time of the bid*/}
-                    <Text style={{fontSize:SIZES.small}}>{new Date(note.date).toLocaleTimeString().slice(0, 5)}. {new Date(note.date).toLocaleDateString()}</Text>
+                    <Text style={styles.Textsmall}>{new Date(note.date).toLocaleTimeString().slice(0, 5)}. {new Date(note.date).toLocaleDateString()}</Text>
                     {/*show the user password who placed the bid*/}
-                    <Text style={{ fontSize: SIZES.small } }> Last bid by: {note.user}</Text>
+                    <Text style={styles.Textsmall}> Last bid by: {note.user}</Text>
 
                 </TouchableOpacity>
             ))}
             <TextInput
-                style={{
-                    height: 50, borderColor: 'gray', borderWidth: 1,
-                    padding: 10,
-                    backgroundColor: 'white',
-                    // make it circle edge
-                    borderRadius: 20,
-                    margin: 10}}
+                style={styles.Textinput}
                 onChangeText={text => setText(text)}
                 keyboardType='numeric'
                 value={text}
@@ -195,75 +172,31 @@ import { Alert } from 'react-native';
             />
             {/*//open google map page*/}
             <View style={styles.container}>
-
-
 <TouchableOpacity
     onPress={addNote}
-    style={{
-        height: 50, borderColor: 'gray', borderWidth: 1,
-        padding: 15,
-        backgroundColor: COLORS.secondary,
-        // make it circle edge
-        borderRadius: 20,
-        margin: 10,
-        alignItems:'center',
-        JustifyContent:'center',
-        width: 100
-    }}
->
-
-    <Text style={{fontSize: SIZES.small, fontWeight: 'bold',color: COLORS.white}}>Place a Bid</Text>
+    style={styles.Addbutton}>
+    <Text style={styles.Textbutton}>Place a Bid</Text>
 </TouchableOpacity>
             {selectedNote && (
                 <TouchableOpacity
                     onPress={deleteNote}
-                    style={{
-                        height: 50, borderColor: 'gray', borderWidth: 1,
-                        padding: 15,
-                        backgroundColor: COLORS.white,
-                        // make it circle edge
-                        borderRadius: 20,
-                        margin: 10,
-                        alignItems:'center',
-                        JustifyContent:'center',
-                        width: 100
-                        }
-                    }
-                >
-                    <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>Delete a Bid</Text>
+                    style={styles.Deletebutton}>
+                    <Text style={styles.Textsmall}>Delete a Bid</Text>
                 </TouchableOpacity>
-
             )}
                 {/*googing to google map page*/}
                 <TouchableOpacity onPress={openMap}
                                   value={data.address}
-                                  style={{
-                                      height: 50, borderColor: 'gray', borderWidth: 1,
-                                      padding: 15,
-                                      backgroundColor: COLORS.green2,
-                                      // make it circle edge
-                                      borderRadius: 20,
-                                      margin: 10,
-                                      alignItems: 'center',
-                                      JustifyContent: 'center',
-                                      width: 100
-                                  }}
-                >
-                    <Text style={{fontSize: SIZES.small, fontWeight: 'bold',color: COLORS.primary}}> ADDRESS</Text>
-                </TouchableOpacity>
+                                  style={styles.Addressbutton}>
 
+                    <Text style={styles.Textsmall}> Address</Text>
+                </TouchableOpacity>
             </View>
 
-
-
-
-
-
-
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: SIZES.base}}>
-                <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>{data.category}</Text>
-                <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>{data.date}</Text>
-                <Text style={{fontSize: SIZES.small, fontWeight: 'bold'}}>{data.brand}</Text>
+            <View style={styles.brandcontainer}>
+                <Text style={styles.Textsmall}>{data.category}</Text>
+                <Text style={styles.Textsmall}>{data.date}</Text>
+                <Text style={styles.Textsmall}>{data.brand}</Text>
                 <Text style={{fontSize: SIZES.extraLarge, fontWeight: 'bold'}}>{data.price}
                     <Image
                     source={data.dkk}
@@ -277,6 +210,7 @@ import { Alert } from 'react-native';
 
 
             </View>
+
         </View>
     );
 };
@@ -290,9 +224,90 @@ const styles = StyleSheet.create({
         //
         flexWrap: 'wrap',
         // space between each item
+    },
+    brandcontainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: SIZES.base
+    },
+    Imagecard: {
+        width: "100%",
+        height: "100%",
+        borderTopLeftRadius: SIZES.font,
+        borderTopRightRadius: SIZES.font,
+    },
 
+    Card: {
+    backgroundColor: COLORS.yellow,
+    borderRadius: SIZES.font,
+    marginBottom: SIZES.extraLarge,
+    margin:SIZES.base,
+...SHADOWS.dark,
+    },
+    Textsmall: {
+        fontSize: SIZES.small,
+        fontWeight: 'bold',
+        color: COLORS.primary
+    },
+    Textlarge: {
+    textDecorationLine: 'underline',
+    fontWeight: 'bold',
+    fontSize:SIZES.extraLarge,
+    color:COLORS.secondary
+    },
+    Textbutton: {
+        fontSize: SIZES.small,
+        fontWeight: 'bold',
+        color: COLORS.white
+    },
+    Textinput: {
+    height: 50, borderColor: 'gray', borderWidth: 1,
+    padding: 10,
+    backgroundColor: 'white',
+    // make it circle edge
+    borderRadius: 20,
+    margin: 10
+    },
+    Deletebutton: {
+    height: 50, borderColor: 'gray', borderWidth: 1,
+    padding: 15,
+    backgroundColor: COLORS.white,
+    // make it circle edge
+    borderRadius: 20,
+    margin: 10,
+    alignItems:'center',
+    JustifyContent:'center',
+    width: 100
+},
+    Addressbutton: {
+    height: 50, borderColor: 'gray', borderWidth: 1,
+    padding: 15,
+    backgroundColor: COLORS.yellow,
+    // make it circle edge
+    borderRadius: 20,
+    margin: 10,
+    alignItems: 'center',
+    JustifyContent: 'center',
+    width: 100
+    },
+    Addbutton: {
 
+    height: 50, borderColor: 'gray', borderWidth: 1,
+    padding: 15,
+    backgroundColor: COLORS.secondary,
+    // make it circle edge
+    borderRadius: 20,
+    margin: 10,
+    alignItems:'center',
+    JustifyContent:'center',
+    width: 100
     }
+
+
+
+
+
 });
 
 

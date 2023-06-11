@@ -2,8 +2,8 @@ export const COLORS = {
   primary: "#001F2D",
   secondary: "#00A1F2",
 
-  white: "#EAFCFF",
-  green2: "#F1F1E6",
+  white: "#F1FBFF",
+  yellow: "#FFF7D6",
 };
 
 export const SIZES = {
@@ -25,7 +25,7 @@ export const FONTS = {
 
 export const SHADOWS = {
   light: {
-    shadowColor: COLORS.green2,
+    shadowColor: COLORS.yellow,
     shadowOffset: {
       width: 0,
       height: 1,
@@ -36,7 +36,7 @@ export const SHADOWS = {
     elevation: 3,
   },
   medium: {
-    shadowColor: COLORS.green2,
+    shadowColor: COLORS.yellow,
     shadowOffset: {
       width: 0,
       height: 3,
@@ -47,7 +47,7 @@ export const SHADOWS = {
     elevation: 7,
   },
   dark: {
-    shadowColor: COLORS.green2,
+    shadowColor: COLORS.yellow,
     shadowOffset: {
       width: 0,
       height: 7,
