@@ -7,6 +7,7 @@ import {useCollectionData} from "react-firebase-hooks/firestore";
 
 
 
+
 const FetchData = () => {
     const navigation = useNavigation();
     const[notes] = useCollectionData(notesRef2, {idField: 'id'});
@@ -39,7 +40,7 @@ const FetchData = () => {
                 console.log(error);
 
             }
-await fetchData();
+            await fetchData();
         };
     }, []);
 
@@ -98,7 +99,7 @@ await fetchData();
         const lat = addressArray[0].trim();
         const lng = addressArray[1].trim();
 
-        navigation.navigate('Googlemap(latlong)', { lat, lng });
+        navigation.navigate('GoogleMapComponent', { lat, lng });
         console.log('this is a lat',lat);
         console.log('this is a lng',lng);
     };
@@ -210,7 +211,7 @@ await fetchData();
 };
 
 
-    const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
