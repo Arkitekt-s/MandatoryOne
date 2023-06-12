@@ -54,7 +54,7 @@ import UploadImageComponent from "../component/UploadImageComponent";
                     const uploadTask = await UploadImageComponent(image);
                     const snapshot = await uploadTask;
                     const url = await snapshot.ref.getDownloadURL();
-                    const documentName = `Sell-Item- ${Date.now()} `;
+                    const documentName = `Sell-Item- ${auth.currentUser.uid.slice(0, 5)}-${Date.now()}`;
 
                     await firestore.collection('sellitems').doc(documentName).set({
                         //uniq sell id for each item

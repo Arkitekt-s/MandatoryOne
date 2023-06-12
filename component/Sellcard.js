@@ -1,4 +1,3 @@
-
 //react native functinal export comment's
 import React, {useState} from 'react';
 import {View, Text,StyleSheet, Image, TouchableOpacity, TextInput} from 'react-native';
@@ -12,11 +11,11 @@ import { Alert } from 'react-native';
 
 
 
- const Sellcard = ({data}) => {
+const Sellcard = ({data}) => {
 
     let navigation = useNavigation();
     const[notes] = useCollectionData(notesRef, {idField: 'id'});
-    const [text, setText] = useState('');
+    const [price, setPrice] = useState('');
     const [selectedNote, setSelectedNote] = useState(null);
     const currentUser = auth.currentUser;
     const userEmail = currentUser ? currentUser.email : '';
@@ -37,26 +36,26 @@ import { Alert } from 'react-native';
         const lastPrice = notes.filter((note) => note.orginalPrice === data.price)[0];
 
 
-        if (text === '') {
+        if (price=== '') {
             alert('Please enter a price');
             return;
         }
-        if (isNaN(text)) {
+        if (isNaN(price)) {
             alert('Please enter a number');
             return;
         }
         //IF its no price for the items suggested
-        if (lastPrice === undefined  && text > data.price) {
+        if (lastPrice === undefined  && price > data.price) {
             firestore.collection('items').doc(data.id).set({
                 itemId: data.id,
-                priceSuggestion: text,
+                priceSuggestion: price,
                 date: Date.now(),
                 orginalPrice: data.price,
                 user: userEmail,
                 image:data.image,
                 address:data.address,
             }).then(() => {
-                alert('Price added to '+data.brand+' with the price of '+ text.toString()+' DKK');
+                alert('Price added to '+data.brand+' with the price of '+ price.toString()+' DKK');
             }).catch((error) => {
                 //give alart if the price is lower than the orginal price
                 console.log(error);
@@ -67,12 +66,12 @@ import { Alert } from 'react-native';
         }
 
 
-       
+
 //its about compear the price with the last price
-        if (text > lastPrice.priceSuggestion  && text > data.price  ) {
+        if (price> lastPrice.priceSuggestion  && price > data.price  ) {
             firestore.collection('items').doc(data.id).set({
                 itemId: data.id,
-                priceSuggestion: text,
+                priceSuggestion: price,
                 date: Date.now(),
                 orginalPrice: data.price,
                 user: userEmail,
@@ -80,7 +79,7 @@ import { Alert } from 'react-native';
                 image:data.image,
                 address:data.address,
             }).then(() => {
-                alert('Price added to '+data.brand+' with the price of '+ text.toString()+' DKK');
+                alert('Price added to '+data.brand+' with the price of '+ price.toString()+' DKK');
             }).catch((error) => {
                 console.log(error);
             });
@@ -96,12 +95,12 @@ import { Alert } from 'react-native';
 
     const deleteNote = async () => {
         firestore.collection('items').doc(data.id).delete().then(() => {
-            alert('Price deleted from '+data.brand+' with the price of '+ text.toString()+' DKK');
+            alert('Price deleted from '+data.brand+' with the price of '+ price.toString()+' DKK');
         }).catch((error) => {
-            console.log(error);
-        }
+                console.log(error);
+            }
         );
-        }
+    }
 
 
     //open google map
@@ -130,60 +129,60 @@ import { Alert } from 'react-native';
             {notes && notes
                 .filter((note) => note.orginalPrice === data.price)
                 .map((note) => (
-                <TouchableOpacity
-                    key={note.id}
-                    data={note}
-                    onPress={() => {
-                        if (selectedNote && selectedNote.id === note.id) {
-                            setSelectedNote(null);
-                            setText('');
-                        }
-                        else {
-                            setSelectedNote(note);
-                            console.log('selected note:', note);
-                            setText(note.priceSuggestion);
-                        }
-                    }}
-                >
-                    {/*Only render the text for the selected note */}
-                    <Text style={styles.Textlarge}
-                    >{note.priceSuggestion}
-                        <Image
-                            source={data.dkk}
-                            resizeMode="cover"
-                            style={{
-                                width: 25,
-                                height: 25,
-                            }}
-                        /></Text>
-                    {/*//show the time of the bid*/}
-                    <Text style={styles.Textsmall}>{new Date(note.date).toLocaleTimeString().slice(0, 5)}. {new Date(note.date).toLocaleDateString()}</Text>
-                    {/*show the user password who placed the bid*/}
-                    <Text style={styles.Textsmall}> Last bid by: {note.user}</Text>
+                    <TouchableOpacity
+                        key={note.id}
+                        data={note}
+                        onPress={() => {
+                            if (selectedNote && selectedNote.id === note.id) {
+                                setSelectedNote(null);
+                                setPrice('');
+                            }
+                            else {
+                                setSelectedNote(note);
+                                console.log('selected note:', note);
+                                setPrice(note.priceSuggestion);
+                            }
+                        }}
+                    >
+                        {/*Only render the text for the selected note */}
+                        <Text style={styles.Textlarge}
+                        >{note.priceSuggestion}
+                            <Image
+                                source={data.dkk}
+                                resizeMode="cover"
+                                style={{
+                                    width: 25,
+                                    height: 25,
+                                }}
+                            /></Text>
+                        {/*//show the time of the bid*/}
+                        <Text style={styles.Textsmall}>{new Date(note.date).toLocaleTimeString().slice(0, 5)}. {new Date(note.date).toLocaleDateString()}</Text>
+                        {/*show the user password who placed the bid*/}
+                        <Text style={styles.Textsmall}> Last bid by: {note.user}</Text>
 
-                </TouchableOpacity>
-            ))}
+                    </TouchableOpacity>
+                ))}
             <TextInput
                 style={styles.Textinput}
-                onChangeText={text => setText(text)}
+                onChangeText={price => setPrice(price)}
                 keyboardType='numeric'
-                value={text}
+                value={price}
                 placeholder="Place your Bid"
             />
             {/*//open google map page*/}
             <View style={styles.container}>
-<TouchableOpacity
-    onPress={addNote}
-    style={styles.Addbutton}>
-    <Text style={styles.Textbutton}>Place a Bid</Text>
-</TouchableOpacity>
-            {selectedNote && (
                 <TouchableOpacity
-                    onPress={deleteNote}
-                    style={styles.Deletebutton}>
-                    <Text style={styles.Textsmall}>Delete a Bid</Text>
+                    onPress={addNote}
+                    style={styles.Addbutton}>
+                    <Text style={styles.Textbutton}>Place a Bid</Text>
                 </TouchableOpacity>
-            )}
+                {selectedNote && (
+                    <TouchableOpacity
+                        onPress={deleteNote}
+                        style={styles.Deletebutton}>
+                        <Text style={styles.Textsmall}>Delete a Bid</Text>
+                    </TouchableOpacity>
+                )}
                 {/*googing to google map page*/}
                 <TouchableOpacity onPress={openMap}
                                   value={data.address}
@@ -199,13 +198,13 @@ import { Alert } from 'react-native';
                 <Text style={styles.Textsmall}>{data.brand}</Text>
                 <Text style={{fontSize: SIZES.extraLarge, fontWeight: 'bold'}}>{data.price}
                     <Image
-                    source={data.dkk}
-                    style={{
-                        width: 25,
-                        height: 25,
-                    }
-                    }
-                /></Text>
+                        source={data.dkk}
+                        style={{
+                            width: 25,
+                            height: 25,
+                        }
+                        }
+                    /></Text>
 
 
 
@@ -239,11 +238,11 @@ const styles = StyleSheet.create({
     },
 
     Card: {
-    backgroundColor: COLORS.yellow,
-    borderRadius: SIZES.font,
-    marginBottom: SIZES.extraLarge,
-    margin:SIZES.base,
-...SHADOWS.dark,
+        backgroundColor: COLORS.yellow,
+        borderRadius: SIZES.font,
+        marginBottom: SIZES.extraLarge,
+        margin:SIZES.base,
+        ...SHADOWS.dark,
     },
     Textsmall: {
         fontSize: SIZES.small,
@@ -251,10 +250,10 @@ const styles = StyleSheet.create({
         color: COLORS.primary
     },
     Textlarge: {
-    textDecorationLine: 'underline',
-    fontWeight: 'bold',
-    fontSize:SIZES.extraLarge,
-    color:COLORS.secondary
+        textDecorationLine: 'underline',
+        fontWeight: 'bold',
+        fontSize:SIZES.extraLarge,
+        color:COLORS.secondary
     },
     Textbutton: {
         fontSize: SIZES.small,
@@ -262,46 +261,46 @@ const styles = StyleSheet.create({
         color: COLORS.white
     },
     Textinput: {
-    height: 50, borderColor: 'gray', borderWidth: 1,
-    padding: 10,
-    backgroundColor: 'white',
-    // make it circle edge
-    borderRadius: 20,
-    margin: 10
+        height: 50, borderColor: 'gray', borderWidth: 1,
+        padding: 10,
+        backgroundColor: 'white',
+        // make it circle edge
+        borderRadius: 20,
+        margin: 10
     },
     Deletebutton: {
-    height: 50, borderColor: 'gray', borderWidth: 1,
-    padding: 15,
-    backgroundColor: COLORS.white,
-    // make it circle edge
-    borderRadius: 20,
-    margin: 10,
-    alignItems:'center',
-    JustifyContent:'center',
-    width: 100
-},
+        height: 50, borderColor: 'gray', borderWidth: 1,
+        padding: 15,
+        backgroundColor: COLORS.white,
+        // make it circle edge
+        borderRadius: 20,
+        margin: 10,
+        alignItems:'center',
+        JustifyContent:'center',
+        width: 100
+    },
     Addressbutton: {
-    height: 50, borderColor: 'gray', borderWidth: 1,
-    padding: 15,
-    backgroundColor: COLORS.yellow,
-    // make it circle edge
-    borderRadius: 20,
-    margin: 10,
-    alignItems: 'center',
-    JustifyContent: 'center',
-    width: 100
+        height: 50, borderColor: 'gray', borderWidth: 1,
+        padding: 15,
+        backgroundColor: COLORS.yellow,
+        // make it circle edge
+        borderRadius: 20,
+        margin: 10,
+        alignItems: 'center',
+        JustifyContent: 'center',
+        width: 100
     },
     Addbutton: {
 
-    height: 50, borderColor: 'gray', borderWidth: 1,
-    padding: 15,
-    backgroundColor: COLORS.secondary,
-    // make it circle edge
-    borderRadius: 20,
-    margin: 10,
-    alignItems:'center',
-    JustifyContent:'center',
-    width: 100
+        height: 50, borderColor: 'gray', borderWidth: 1,
+        padding: 15,
+        backgroundColor: COLORS.secondary,
+        // make it circle edge
+        borderRadius: 20,
+        margin: 10,
+        alignItems:'center',
+        JustifyContent:'center',
+        width: 100
     }
 
 

@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
-import {firestore, auth, notesRef} from '../Config/FirebaseConfig';
+import {firestore, auth, notesRef2} from '../Config/FirebaseConfig';
 import { COLORS, SHADOWS, SIZES } from "../constants";
-import Googlemap from "./Googlemap";
+
 import { useNavigation } from "@react-navigation/native";
-import {map} from "mathjs";
+
 import {useCollectionData} from "react-firebase-hooks/firestore";
 
 const FetchData = () => {
     const navigation = useNavigation();
-    const[notes] = useCollectionData(notesRef, {idField: 'id'});
+    const[notes] = useCollectionData(notesRef2, {idField: 'id'});
     const [notesData, setNotesData] = useState([]);
     const [priceSuggestions, setPriceSuggestions] = useState('');
     const [selectedNote, setSelectedNote] = useState(null);
@@ -103,81 +103,81 @@ const FetchData = () => {
 
                 .map((item) => (
                     <View key={`Sell-Item-${item.id}`} style={styles.Card}>
-                    <View style={{ width: "100%", height: 250 }}>
-                        <Image
-                            source={{ uri: item.image }}
-                            resizeMode="cover"
-                            style={styles.Imagecard}
-                        />
-                    </View>
-                    <TouchableOpacity
-                        key={item.id}
-                        item={item}
-                        onPress={() => {
-                            if (selectedNote && selectedNote.id === item.id) {
-                                setSelectedNote(null);
-                                setPriceSuggestions('');
-                            } else {
-                                setSelectedNote({
-                                    id: item.id,
-                                    priceSuggestions: item.priceSuggestions,
-                                });
-                                setPriceSuggestions(item.priceSuggestions);
-                            }
-                        }}
-                    >
-                        <Text style={styles.Textlarge}>
-                            {item.originalPrice}
-                                <Image source={require('../assets/icons/dkk.png')}
-                                                           style={{width: 25, height: 25,}} />
-                        </Text>
-                        {/*show date in readable format*/}
-                        <Text style={styles.Textsmall}>Date: {item.date}</Text>
-                        <Text style={styles.Textsmall}>Last bid by: {item.userId.substring(0, 5)}</Text>
-                    </TouchableOpacity>
-                    <TextInput
-                        style={styles.Textinput}
-                        onChangeText={setPriceSuggestions}
-                        keyboardType='numeric'
-                        value={priceSuggestions}
-                        placeholder="Place your Bid"
-                    />
-                    {/* Place your additional components here */}
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={() => addNote(item.id)}
-                                          style={styles.Addbutton}>
-                            <Text style={styles.Textbutton}>Place a Bid</Text>
-                        </TouchableOpacity>
-                        {selectedNote && (
-                            <TouchableOpacity
-                                onPress={() => deleteNote(item.id)}
-                                style={styles.Deletebutton}>
-                                <Text style={styles.Textbutton}>Delete a Bid</Text>
-                            </TouchableOpacity>
-                        )}
-                        <TouchableOpacity onPress={() => openMap(item.address)}
-                                          value={item.address}
-                                          style={styles.Addressbutton}>
-                            <Text style={styles.Textsmall}>Address</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.brandcontainer} key={item.id}>
-                        <Text style={styles.Textsmall}>{item.title}</Text>
-                        <Text style={styles.Textsmall}>{item.description}</Text>
-                        <Text style={{ fontSize: SIZES.extraLarge, fontWeight: 'bold' }}>
-                            {item.originalPrice}
+                        <View style={{ width: "100%", height: 250 }}>
                             <Image
-                                source={require('../assets/icons/dkk.png')}
-                                style={{
-                                    width: 25,
-                                    height: 25,
-                                }
-                                }
+                                source={{ uri: item.image }}
+                                resizeMode="cover"
+                                style={styles.Imagecard}
                             />
-                        </Text>
+                        </View>
+                        <TouchableOpacity
+                            key={item.id}
+                            item={item}
+                            onPress={() => {
+                                if (selectedNote && selectedNote.id === item.id) {
+                                    setSelectedNote(null);
+                                    setPriceSuggestions('');
+                                } else {
+                                    setSelectedNote({
+                                        id: item.id,
+                                        priceSuggestions: item.priceSuggestions,
+                                    });
+                                    setPriceSuggestions(item.priceSuggestions);
+                                }
+                            }}
+                        >
+                            <Text style={styles.Textlarge}>
+                                {item.originalPrice}
+                                <Image source={require('../assets/icons/dkk.png')}
+                                       style={{width: 25, height: 25,}} />
+                            </Text>
+                            {/*show date in readable format*/}
+                            <Text style={styles.Textsmall}>Date: {item.date}</Text>
+                            <Text style={styles.Textsmall}>Last bid by: {item.userId.substring(0, 5)}</Text>
+                        </TouchableOpacity>
+                        <TextInput
+                            style={styles.Textinput}
+                            onChangeText={setPriceSuggestions}
+                            keyboardType='numeric'
+                            value={priceSuggestions}
+                            placeholder="Place your Bid"
+                        />
+                        {/* Place your additional components here */}
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity onPress={() => addNote(item.id)}
+                                              style={styles.Addbutton}>
+                                <Text style={styles.Textbutton}>Place a Bid</Text>
+                            </TouchableOpacity>
+                            {selectedNote && (
+                                <TouchableOpacity
+                                    onPress={() => deleteNote(item.id)}
+                                    style={styles.Deletebutton}>
+                                    <Text style={styles.DeletebuttonText}>Delete a Bid</Text>
+                                </TouchableOpacity>
+                            )}
+                            <TouchableOpacity onPress={() => openMap(item.address)}
+                                              value={item.address}
+                                              style={styles.Addressbutton}>
+                                <Text style={styles.Textsmall}>Address</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.brandcontainer} key={item.id}>
+                            <Text style={styles.Textsmall}>{item.title}</Text>
+                            <Text style={styles.Textsmall}>{item.description}</Text>
+                            <Text style={{ fontSize: SIZES.extraLarge, fontWeight: 'bold' }}>
+                                {item.originalPrice}
+                                <Image
+                                    source={require('../assets/icons/dkk.png')}
+                                    style={{
+                                        width: 25,
+                                        height: 25,
+                                    }
+                                    }
+                                />
+                            </Text>
+                        </View>
                     </View>
-                </View>
-            ))}
+                ))}
 
         </View>
 
@@ -231,6 +231,11 @@ const styles = StyleSheet.create({
         fontSize: SIZES.small,
         fontWeight: 'bold',
         color: COLORS.white,
+    },
+    DeletebuttonText: {
+        fontSize: SIZES.small,
+        fontWeight: 'bold',
+        color: COLORS.primary,
     },
     Textinput: {
         height: 50,

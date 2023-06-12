@@ -27,5 +27,6 @@ const auth = firebase.auth();
 const firestore = firebase.firestore();
 const storage = firebase.storage();
 const notesRef = firestore.collection('items')
+const notesRef2 = firestore.collection('sellitems')
 
-export { auth, firestore, firebase, storage, notesRef }
+export { auth, firestore, firebase, storage, notesRef, notesRef2 }
