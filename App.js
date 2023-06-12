@@ -7,6 +7,7 @@ import HomePage from "./Pages/HomePage";
 import {useFonts} from "expo-font";
 import SellPage from "./Pages/SellPage";
 import Googlemap from "./component/Googlemap";
+import GoogleMapComponent from "./component/GoogleMapComponent";
 
 
 
@@ -41,6 +42,7 @@ const App = () => {
                 <Stack.Screen name="HomePage" component={HomePage} options={{ title: 'Page2' }} />
                 <Stack.Screen name="SellPage" component={SellPage} options={{ title: 'Page2-2' }} />
                 <Stack.Screen name="Googlemap" component={Googlemap} options={{ title: 'Page2-3' }} />
+                <Stack.Screen name="Googlemap(latlong)" component={GoogleMapComponent} options={{ title: 'Page2-4' }} />
             </Stack.Navigator>
             </NavigationContainer>
     );

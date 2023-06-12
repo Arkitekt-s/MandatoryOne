@@ -17,7 +17,7 @@ import {useNavigation} from "@react-navigation/native";
 import Bar from "../component/Bar";
 import ImagePickerComponent from "../component/ImagePickerComponent";
 import UploadImageComponent from "../component/UploadImageComponent";
-
+import moment from 'moment';
 
 
 
@@ -54,15 +54,15 @@ import UploadImageComponent from "../component/UploadImageComponent";
                     const uploadTask = await UploadImageComponent(image);
                     const snapshot = await uploadTask;
                     const url = await snapshot.ref.getDownloadURL();
-                    const documentName = `Sell-Item- ${auth.currentUser.uid.slice(0, 5)}-${Date.now()}`;
+                    const documentName = `Sell-Item- ${auth.currentUser.uid.slice(0, 3)}-${moment().format('MMMM Do YYYY, h:mm:ss a')}`;
 
                     await firestore.collection('sellitems').doc(documentName).set({
                         //uniq sell id for each item
-                        userId: auth.currentUser.uid.slice(0, 5),
+                        userId: auth.currentUser.uid.slice(0, 3),
                         title: title,
                         originalPrice: originalPrice,
                         priceSuggestions: priceSuggestions,
-                        date: Date.now(),
+                        date: moment().format('MMMM Do YYYY, h:mm:ss a'),
                         description: description,
                         address: location,
                         image: url,

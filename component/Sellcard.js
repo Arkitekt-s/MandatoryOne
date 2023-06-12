@@ -187,7 +187,6 @@ const Sellcard = ({data}) => {
                 <TouchableOpacity onPress={openMap}
                                   value={data.address}
                                   style={styles.Addressbutton}>
-
                     <Text style={styles.Textsmall}> Address</Text>
                 </TouchableOpacity>
             </View>
@@ -205,8 +204,6 @@ const Sellcard = ({data}) => {
                         }
                         }
                     /></Text>
-
-
 
             </View>
 
