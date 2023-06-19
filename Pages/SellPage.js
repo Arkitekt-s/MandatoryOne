@@ -57,6 +57,8 @@ import moment from 'moment';
                     const documentName = `Sell-Item- ${auth.currentUser.uid.slice(0, 3)}-${moment().format('MMMM Do YYYY, h:mm:ss a')}`;
 
                     await firestore.collection('sellitems').doc(documentName).set({
+                        //uniqe id for each item
+                        id: documentName,
                         //uniq sell id for each item
                         userId: auth.currentUser.uid.slice(0, 3),
                         title: title,

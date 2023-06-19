@@ -1,9 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert} from 'react-native';
 import {firestore, auth, notesRef2} from '../Config/FirebaseConfig';
 import { COLORS, SHADOWS, SIZES } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 import {useCollectionData} from "react-firebase-hooks/firestore";
+import firebase from "firebase/compat/app";
+
+
 
 
 
@@ -13,6 +16,7 @@ const FetchData = () => {
     const[notes] = useCollectionData(notesRef2, {idField: 'id'});
     const [notesData, setNotesData] = useState([]);
     const [priceSuggestions, setPriceSuggestions] = useState('');
+    const[originalPrice, setOriginalPrice] = useState('');
     const [selectedNote, setSelectedNote] = useState(null);
 
     useEffect(() => {
@@ -21,13 +25,13 @@ const FetchData = () => {
                 const snapshot = await firestore.collection('sellitems').get();
 
                 const list = snapshot.docs.map((doc) => {
-                    const { title, originalPrice, priceSuggestions, description, image,address } = doc.data();
+                    const { title, originalPrice, priceSuggestions, description, image,address} = doc.data();
                     return {
                         id: doc.id,
                         title: title,
                         originalPrice: originalPrice,
                         priceSuggestions: priceSuggestions,
-                        date: date,
+                        date: doc.date,
                         description: description,
                         address: address,
                         userId: auth.currentUser ? auth.currentUser.uid : '',
@@ -45,14 +49,67 @@ const FetchData = () => {
     }, []);
 
 
+      //
+    // addNote();
 
     const addNote = async () => {
-        const notesSnapshot = await firestore.collection('sellitems').get();
-        const notes = [];
-        notesSnapshot.forEach((doc) => {
-            const note = doc.data();
-            note.id = doc.id;
-            notes.push(note);
+        if (!selectedNote) {
+            Alert.alert('Please select a price suggestion to add your price.');
+            console.error('selectedNote is null or undefined.');
+            return;
+        }
+        const sellItemsRef = firestore.collection('sellitems').doc(selectedNote.id);
+
+        const priceSuggestion = {
+            priceSuggestions: priceSuggestions,
+            userId: auth.currentUser.uid,
+            // suggestedBy: auth.currentUser.displayName is
+            // the display name of the currently authenticated user.
+            // It is retrieved from the currentUser object provided by Firebase
+            // Authentication. This field is used to store the name of the user who
+            // made the price suggestion.
+            suggestedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            suggestedBy: auth.currentUser.uid.slice(0, 3),
+
+        };
+
+        try {
+            //does not allow to price suggestion less than orginal price
+            if (priceSuggestions < originalPrice) {
+                alert('Price suggestion cannot be less than original price');
+                return;
+            }
+            //if price suggestion is less than other price suggestion then it will not allow to add
+            if (priceSuggestions < selectedNote.priceSuggestions) {
+                alert('Price suggestion cannot be less than other price suggestions');
+                return;
+            }
+            if (priceSuggestions === '') {
+                alert('Please enter a price suggestion');
+                return;
+            }
+            await sellItemsRef.update(priceSuggestion);
+            console.log('Price suggestion added successfully!');
+            alert('Price suggestion added successfully to your shopping card!');
+        } catch (error) {
+            console.error('Error adding price suggestion:', error);
+            alert('Error adding price suggestion: try again');
+        }
+        // Set up a real-time listener to receive updates
+        // onSnapshot method is used to update the selectedNote
+        sellItemsRef.onSnapshot((snapshot) => {
+            const updatedData = snapshot.data();
+
+
+            // Update the selectedNote state with the updated data
+
+            setSelectedNote({
+                ...selectedNote,
+                priceSuggestions: updatedData.priceSuggestions,
+
+
+
+            });
         });
     };
 
@@ -61,19 +118,31 @@ const FetchData = () => {
 
 
 
+
+
+
+
+//delete suggestion note
     const deleteNote = async (item) => {
+        const sellItemsRef = firestore.collection('sellitems').doc(item.id);
+
         try {
-            if (!item) {
-                console.log('Invalid item:', item);
+            //if the user is not the owner of the note, do not allow to delete
+            if (item.userId !== auth.currentUser.uid) {
+                alert('You are not the highest bidder, so you cannot delete this price suggestion');
+                return;
+            }
+            if (item.priceSuggestions === '') {
+                alert('There is no price suggestion to delete');
                 return;
             }
 
-            await firestore.collection('sellitems').doc(item.id).delete();
-
-            const updatedNotes = notesData.filter((note) => note.id !== item.id);
-            setNotesData(updatedNotes);
+            await sellItemsRef.update({
+                priceSuggestions: ""
+            });
+            console.log('Suggestion price deleted!');
         } catch (error) {
-            console.log('Error deleting note:', error);
+            console.error('Error deleting suggestion price:', error);
         }
     };
 
@@ -109,7 +178,7 @@ const FetchData = () => {
 
             {notes &&
                 notes
-                    .filter((item) => item.priceSuggestions === priceSuggestions)
+                    .filter((item) => item.userId !== auth.currentUser.uid)
                     .map((item ,index) => (
                         <View key={`Sell-Item-${item.id}-${index}`} style={styles.Card}>
                             <View style={{ width: '100%', height: 250 }}>
@@ -125,13 +194,11 @@ const FetchData = () => {
                                 onPress={() => {
                                     if (selectedNote && selectedNote.id === item.id) {
                                         setSelectedNote(null);
-                                        setPriceSuggestions('');
+                                        setOriginalPrice('');
                                     } else {
-                                        setSelectedNote({
-                                            id: item.id,
-                                            priceSuggestions: item.priceSuggestions,
-                                        });
-                                        setPriceSuggestions(item.priceSuggestions);
+                                        setSelectedNote(item);
+                                        console.log('this is a item',item);
+                                        setOriginalPrice(item.priceSuggestions);
                                     }
                                 }}
                             >
@@ -164,17 +231,17 @@ const FetchData = () => {
 
                             <View style={styles.buttonContainer}>
                                 <TouchableOpacity
-                                    onPress={() => addNote(item.id)}
+                                    onPress={() => addNote(item)}
                                     style={styles.Addbutton}
                                 >
-                                    <Text style={styles.Textbutton} value={item.id}>
+                                    <Text style={styles.Textbutton} value={item}>
                                         Add a Bid
                                     </Text>
 
                                 </TouchableOpacity>
                                 {selectedNote && (
                                     <TouchableOpacity
-                                        onPress={() => deleteNote(item.id)}
+                                        onPress={() => deleteNote(item)}
                                         style={styles.Deletebutton}
                                     >
                                         <Text style={styles.DeletebuttonText}>Delete a Bid</Text>

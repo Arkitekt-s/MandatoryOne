@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {View, StyleSheet,Text, TouchableOpacity, TextInput,Image} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {auth} from "../Config/FirebaseConfig";
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
         width: 100,
         height: 50,
         borderRadius: 20,
-        margin: 20,
+        margin: 10,
     },
     registerButton: {
         alignItems: 'center',
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
         width: 100,
         height: 50,
         borderRadius: 20,
-        margin: 20,
+        margin: 10,
     }
 });
 
