@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     map: {
+        //map vertically and horizontally, and the map style uses StyleSheet.absoluteFillObject to occupy the entire available space.
         ...StyleSheet.absoluteFillObject,
     },
 });

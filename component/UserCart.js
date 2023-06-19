@@ -1,34 +1,29 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert} from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert,SafeAreaView,ScrollView } from 'react-native';
 import {firestore, auth, notesRef2} from '../Config/FirebaseConfig';
 import { COLORS, SHADOWS, SIZES } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 import addNote from "../component/AddNote";
 import deleteNote from "../component/DeleteNote";
-// import CountDown from 'react-native-countdown-component';
+import Bar from "./Bar";
 
 
-const FetchData = () => {
+const UserCart = () => {
     const navigation = useNavigation();
-    //useCollectionData is a hook that listens to updates to the firestore collection and updates the state of the component
     const[notes] = useCollectionData(notesRef2, {idField: 'id'});
     const [notesData, setNotesData] = useState([]);
     const [priceSuggestions, setPriceSuggestions] = useState('');
     const[originalPrice, setOriginalPrice] = useState('');
     const [selectedNote, setSelectedNote] = useState(null);
 
-//side effect hook
     useEffect(() => {
-        // asynchronus function
         const fetchData = async () => {
             try {
                 const snapshot = await firestore.collection('sellitems').get();
 
-                //map through the data and store it in a list array
                 const list = snapshot.docs.map((doc) => {
-                    const { title,originalPrice, priceSuggestions, description, image,address} = doc.data();
-
+                    const { title, originalPrice, priceSuggestions, description, image,address} = doc.data();
                     return {
                         id: doc.id,
                         title: title,
@@ -39,8 +34,6 @@ const FetchData = () => {
                         address: address,
                         userId: auth.currentUser ? auth.currentUser.uid : '',
                         image: image,
-
-
                     };
                     console.log('this is a indevioul list',list);
                 });
@@ -59,7 +52,7 @@ const FetchData = () => {
         }
 
         const addressArray = address.split(',');
-        //check if the address is valid and have a lat and lng
+
         if (addressArray.length < 2) {
             alert('Invalid address');
             return;
@@ -67,7 +60,6 @@ const FetchData = () => {
 
         const lat = addressArray[0].trim();
         const lng = addressArray[1].trim();
-        //pass the lat and lng to the google map
 
         navigation.navigate('GoogleMapComponent', { lat, lng });
         console.log('this is a lat',lat);
@@ -75,11 +67,14 @@ const FetchData = () => {
     };
 
     return (
-        <View style={styles.container}>
-        {/*// (not null or undefined) using the logical AND (&&) operator.*/}
+        <SafeAreaView style={{flex: 1}}>
+            <Bar backgroundColor={COLORS.white} />
+                <ScrollView style={{ flex: 1 }}>
+                    <View style={styles.container}>
+
             {notes &&
                 notes
-                    .filter((item) => item.userId !== auth.currentUser.uid)
+                    .filter((item) => item.userId ===auth.currentUser.uid)
                     .map((item ,index) => (
                         <View key={`Sell-Item-${item.id}-${index}`} style={styles.Card}>
                             <View style={{ width: '100%', height: 250 }}>
@@ -116,20 +111,7 @@ const FetchData = () => {
                                 <Text style={styles.Textsmall}>
                                     Last bid by: {item.userId.substring(0, 3)}
                                 </Text>
-                                    {/*//random date for remaining time with 5 days calculate in hours*/}
-                                    {/*change to hours count down*/}
-
-
                             </TouchableOpacity>
-                            {/*<CountDown*/}
-                            {/*    until={60 * 10 + 30}*/}
-                            {/*    size={15}*/}
-                            {/*    onFinish={() => alert('This item is sold')}*/}
-                            {/*    digitStyle={{backgroundColor: COLORS.primary}}*/}
-                            {/*    digitTxtStyle={{color: COLORS.yellow}}*/}
-                            {/*    timeToShow={['M', 'S']}*/}
-                            {/*    timeLabels={{m: 'MM', s: 'SS'}}*/}
-                            {/*/>*/}
 
 
 
@@ -187,9 +169,16 @@ const FetchData = () => {
                                 </Text>
                             </View>
                         </View>
-                    ))}
 
-        </View>
+                ))}
+           </View>
+
+
+                    <View/>
+</ScrollView>
+
+        </SafeAreaView>
+
     );
 };
 
@@ -203,6 +192,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         //
         flexWrap: 'wrap',
+        backgroundColor: COLORS.white,
     },
     Card: {
         backgroundColor: COLORS.yellow,
@@ -302,4 +292,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default FetchData;
+export default UserCart;

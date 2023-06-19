@@ -1,13 +1,8 @@
-
-
-
-
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput ,Image} from 'react-native';
-import {COLORS, SIZES} from "../constants/index";
-import { useNavigation } from "@react-navigation/native";
-import { auth,firestore } from "../Config/FirebaseConfig";
-import ShoppingCard from "./ShoppingCard";
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, Image, Alert} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { auth, firestore } from '../Config/FirebaseConfig';
+import { COLORS, SIZES } from '../constants/index';
 
 const Header = () => {
     const navigation = useNavigation();
@@ -16,33 +11,45 @@ const Header = () => {
     const handleSellItem = () => {
         navigation.navigate('SellPage');
     };
+    const handelUserCard = () => {
+        navigation.navigate('UserCart');
+    }
 
     const handleSearch = async () => {
         try {
+
             const snapshot = await firestore
                 .collection('sellitems')
                 .where('title', '>=', searchText)
                 .where('title', '<=', searchText + '\uf8ff')
                 .get();
 
-            const firstResult = snapshot.docs[0].data();
-            console.log('First Search Result:', firstResult);
+
+            if (snapshot.docs.length > 0) {
+                const firstResult = snapshot.docs[0].data();
+                console.log('First Search Result:', firstResult);
+                Alert.alert('Search Results',
+                    `Result: ${firstResult.title}
+                    \n Price: ${firstResult.priceSuggestions}
+                    \n Description: ${firstResult.description}`);
+
+
+
+            } else {
+                console.log('No search results found.');
+                Alert.alert('No Results', 'No items matching your search query were found.');
+            }
         } catch (error) {
             console.error('Error performing search:', error);
+            Alert.alert('Error', 'An error occurred while performing the search.');
         }
     };
-    //show shopping cart
-
-
 
 
     return (
-
         <View style={styles.container}>
-
             <Text style={styles.text}>Welcome {auth.currentUser.uid.slice(0, 3)}</Text>
-            {/*shopping card*/}
-
+            {/* Shopping cart */}
 
             <View style={styles.buttonContainer}>
                 <View style={styles.buttonWrapper}>
@@ -50,24 +57,22 @@ const Header = () => {
                         <Text style={styles.buttonText}>Sell Item</Text>
                     </TouchableOpacity>
                 </View>
+                    <View style={styles.buttonWrapper}>
+                        <TouchableOpacity onPress={handelUserCard} style={styles.button}>
+                            <Text style={styles.buttonText}> A Card</Text>
+                        </TouchableOpacity>
+                    </View>
                 <View style={styles.buttonWrapperSearch}>
-                    <Image
-                        source={require('../assets/icons/search.png')}
-                        style={styles.searchIcon}
-                    />
+                    <Image source={require('../assets/icons/search.png')} style={styles.searchIcon} />
                     <TextInput
                         style={styles.buttonSearch}
                         placeholder="Search"
-                        // picture in placeholder
                         onChangeText={setSearchText}
                         onSubmitEditing={handleSearch}
                         value={searchText}
                     />
                 </View>
-
-
             </View>
-
         </View>
     );
 };
@@ -83,32 +88,23 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 20,
     },
-    cardIcon: {
-        width: 30,
-        height: 30,
-        position: 'absolute',
-        right: 0,
-        top: 0,
-    },
     searchIcon: {
         width: 20,
         height: 20,
         position: 'absolute',
         left: 5,
         top: 25,
-
     },
     buttonContainer: {
         flexDirection: 'row',
     },
     buttonWrapper: {
         flex: 1,
-        alignItems: 'center'
+        alignItems: 'center',
     },
     buttonWrapperSearch: {
         flex: 2,
         alignItems: 'center',
-
     },
     buttonSearch: {
         backgroundColor: COLORS.yellow,
@@ -140,15 +136,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: SIZES.medium,
         textAlign: 'center',
-
     },
     searchImage: {
         width: 20,
         height: 20,
         position: 'absolute',
-    }
+    },
 });
 
 export default Header;
-
-

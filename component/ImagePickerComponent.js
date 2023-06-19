@@ -13,6 +13,7 @@ const ImagePickerComponent = ({ onImageSelected }) => {
     const [image, setImage] = useState(null);
 
     const pickImage = async () => {
+        //ImagePicker.launchImageLibraryAsync method handles the asynchronous task of opening the image library and waiting for the user to pick an image.
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,

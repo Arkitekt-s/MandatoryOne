@@ -1,6 +1,8 @@
 import {auth, firestore} from "../Config/FirebaseConfig";
+import {useNavigation} from "@react-navigation/native";
 
 const deleteNote = async (item) => {
+
     const sellItemsRef = firestore.collection('sellitems').doc(item.id);
 
     try {
@@ -15,9 +17,13 @@ const deleteNote = async (item) => {
         }
 
         await sellItemsRef.update({
-            priceSuggestions: ""
+            priceSuggestions: "",
+            userId: ""
         });
         console.log('Suggestion price deleted!');
+        alert('Suggestion price deleted successfully');
+
+
     } catch (error) {
         console.error('Error deleting suggestion price:', error);
     }

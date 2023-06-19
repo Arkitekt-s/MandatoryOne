@@ -8,7 +8,7 @@ import {useFonts} from "expo-font";
 import SellPage from "./Pages/SellPage";
 import Googlemap from "./component/Googlemap";
 import GoogleMapComponent from "./component/GoogleMapComponent";
-import ShoppingCard from "./component/ShoppingCard";
+import UserCart from "./component/UserCart";
 
 
 
@@ -44,7 +44,7 @@ const App = () => {
                 <Stack.Screen name="SellPage" component={SellPage} options={{ title: 'Page2-2' }} />
                 <Stack.Screen name="Googlemap" component={Googlemap} options={{ title: 'Page2-3' }} />
                 <Stack.Screen name="GoogleMapComponent" component={GoogleMapComponent} options={{ title: 'Page2-4' }} />
-                <Stack.Screen name="ShoppingCard" component={ShoppingCard} options={{ title: 'Page2-5' }} />
+                <Stack.Screen name="UserCart" component={UserCart} options={{ title: 'Page2-5' }} />
             </Stack.Navigator>
             </NavigationContainer>
     );
