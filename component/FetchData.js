@@ -5,6 +5,8 @@ import { COLORS, SHADOWS, SIZES } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 import firebase from "firebase/compat/app";
+import addNote from "../component/AddNote";
+import deleteNote from "../component/DeleteNote";
 
 
 
@@ -42,115 +44,10 @@ const FetchData = () => {
                 setNotesData(list);
             } catch (error) {
                 console.log(error);
-
             }
             await fetchData();
         };
     }, []);
-
-
-      //
-    // addNote();
-
-    const addNote = async () => {
-        if (!selectedNote) {
-            Alert.alert('Please select a price suggestion to add your price.');
-            console.error('selectedNote is null or undefined.');
-            return;
-        }
-        const sellItemsRef = firestore.collection('sellitems').doc(selectedNote.id);
-
-        const priceSuggestion = {
-            priceSuggestions: priceSuggestions,
-            userId: auth.currentUser.uid,
-            // suggestedBy: auth.currentUser.displayName is
-            // the display name of the currently authenticated user.
-            // It is retrieved from the currentUser object provided by Firebase
-            // Authentication. This field is used to store the name of the user who
-            // made the price suggestion.
-            suggestedAt: firebase.firestore.FieldValue.serverTimestamp(),
-            suggestedBy: auth.currentUser.uid.slice(0, 3),
-
-        };
-
-        try {
-            //does not allow to price suggestion less than orginal price
-            if (priceSuggestions < originalPrice) {
-                alert('Price suggestion cannot be less than original price');
-                return;
-            }
-            //if price suggestion is less than other price suggestion then it will not allow to add
-            if (priceSuggestions < selectedNote.priceSuggestions) {
-                alert('Price suggestion cannot be less than other price suggestions');
-                return;
-            }
-            if (priceSuggestions === '') {
-                alert('Please enter a price suggestion');
-                return;
-            }
-            await sellItemsRef.update(priceSuggestion);
-            console.log('Price suggestion added successfully!');
-            alert('Price suggestion added successfully to your shopping card!');
-        } catch (error) {
-            console.error('Error adding price suggestion:', error);
-            alert('Error adding price suggestion: try again');
-        }
-        // Set up a real-time listener to receive updates
-        // onSnapshot method is used to update the selectedNote
-        sellItemsRef.onSnapshot((snapshot) => {
-            const updatedData = snapshot.data();
-
-
-            // Update the selectedNote state with the updated data
-
-            setSelectedNote({
-                ...selectedNote,
-                priceSuggestions: updatedData.priceSuggestions,
-
-
-
-            });
-        });
-    };
-
-
-
-
-
-
-
-
-
-
-//delete suggestion note
-    const deleteNote = async (item) => {
-        const sellItemsRef = firestore.collection('sellitems').doc(item.id);
-
-        try {
-            //if the user is not the owner of the note, do not allow to delete
-            if (item.userId !== auth.currentUser.uid) {
-                alert('You are not the highest bidder, so you cannot delete this price suggestion');
-                return;
-            }
-            if (item.priceSuggestions === '') {
-                alert('There is no price suggestion to delete');
-                return;
-            }
-
-            await sellItemsRef.update({
-                priceSuggestions: ""
-            });
-            console.log('Suggestion price deleted!');
-        } catch (error) {
-            console.error('Error deleting suggestion price:', error);
-        }
-    };
-
-
-
-
-
-
 
     const openMap = (address) => {
         if (!address || address === '') {
@@ -231,13 +128,20 @@ const FetchData = () => {
 
                             <View style={styles.buttonContainer}>
                                 <TouchableOpacity
-                                    onPress={() => addNote(item)}
+                                    onPress={() => addNote(selectedNote, originalPrice, priceSuggestions, setSelectedNote)}
                                     style={styles.Addbutton}
                                 >
                                     <Text style={styles.Textbutton} value={item}>
                                         Add a Bid
                                     </Text>
 
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => openMap(item.address)}
+                                    value={item.address}
+                                    style={styles.Addressbutton}
+                                >
+                                    <Text style={styles.Textsmall}>Address</Text>
                                 </TouchableOpacity>
                                 {selectedNote && (
                                     <TouchableOpacity
@@ -247,13 +151,7 @@ const FetchData = () => {
                                         <Text style={styles.DeletebuttonText}>Delete a Bid</Text>
                                     </TouchableOpacity>
                                 )}
-                                <TouchableOpacity
-                                    onPress={() => openMap(item.address)}
-                                    value={item.address}
-                                    style={styles.Addressbutton}
-                                >
-                                    <Text style={styles.Textsmall}>Address</Text>
-                                </TouchableOpacity>
+
                             </View>
 
                             <View style={styles.brandcontainer}>

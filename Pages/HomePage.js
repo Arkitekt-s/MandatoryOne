@@ -1,10 +1,9 @@
 
 import React, {useEffect, useState} from 'react';
 import {FlatList, SafeAreaView, View} from "react-native";
-import {COLORS, ItemData} from "../constants/index";
+import {COLORS} from "../constants/index";
 import Bar from "../component/Bar";
 import Header from "../component/Header";
-import Sellcard from "../component/Sellcard";
 import FetchData from "../component/FetchData";
 import {  firestore} from "../Config/FirebaseConfig";
 import {useNavigation} from "@react-navigation/native";
@@ -41,9 +40,6 @@ export default function HomePage () {
                             renderItem={({ item }) => (
                                 <>
                                     <FetchData data={item} />
-                                    {ItemData.map((item) => (
-                                        <Sellcard data={item} key={item.id.toString()} />
-                                    ))}
                                 </>
                             )}
                             keyExtractor={(item) => item.id.toString()}

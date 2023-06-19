@@ -4,6 +4,7 @@ import {View, StyleSheet,Text, TouchableOpacity, TextInput,Image} from 'react-na
 import {useNavigation} from "@react-navigation/native";
 import {auth} from "../Config/FirebaseConfig";
 import {COLORS} from "../constants";
+import Bar from "../component/Bar";
 
 
 
@@ -43,6 +44,7 @@ const LoginPage = () => {
 
     return (
         <View style={styles.container} backgroundColor={COLORS.primary}>
+            <Bar backgroundColor={COLORS.primary} />
             {/*//login with username and password*/}
             <Image source={require('../assets/images/logo.png')} style={{width: 300, height: 100}}
                      resizeMode="contain"/>
@@ -83,7 +85,7 @@ const LoginPage = () => {
                     style={styles.registerButton}
                                title="Register"
             >
-                <Text style={{color: 'white'}}>Register</Text>
+                <Text style={{color: 'black'}}>Register</Text>
             </TouchableOpacity>
 
 
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
     ,
     loginButton: {
         alignItems: 'center',
-        backgroundColor: '#00A1F2',
+        backgroundColor: COLORS.secondary,
         padding: 15,
         width: 100,
         height: 50,
@@ -129,7 +131,7 @@ const styles = StyleSheet.create({
     },
     registerButton: {
         alignItems: 'center',
-        backgroundColor: '#007C4C',
+        backgroundColor: COLORS.white,
         padding: 15,
         width: 100,
         height: 50,
